@@ -1,28 +1,10 @@
-// @refresh reload
-import { createSignal } from 'solid-js';
+import Login from '~/components/login';
 
-export default function App() {
-	const [count, setCount] = createSignal(0);
-
+export default function Home() {
 	return (
-		<main>
-			<h1>Hello world!</h1>
-			<button
-				type="button"
-				class="increment"
-				onClick={() => setCount(count() + 1)}
-			>
-				Clicks: {count()}
-			</button>
-			<p>
-				Visit{' '}
-				<a href="https://start.solidjs.com" target="_blank" rel="noreferrer">
-					start.solidjs.com
-				</a>{' '}
-				<span class="text-green-600">
-					to learn how to build SolidStart app.
-				</span>
-			</p>
+		<main class="max-w-screen-md mx-auto mt-4">
+			<h1 class="text-3xl text-center">Scavenge</h1>
+			<Login />
 		</main>
 	);
 }

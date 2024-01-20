@@ -7,8 +7,11 @@
     "start": "vinxi start"
   },
   "dependencies": {
+    "@clerk/clerk-js": "^4.68.5",
+    "@iconify-json/tabler": "^1.1.104",
     "@solidjs/router": "^0.10.9",
     "@solidjs/start": "^0.4.10",
+    "@unocss/reset": "^0.58.3",
     "solid-js": "^1.8.11",
     "vinxi": "^0.1.4"
   },
