@@ -1,25 +1,20 @@
 // @refresh reload
-import { createSignal } from 'solid-js';
+import { Router } from '@solidjs/router';
+import { FileRoutes } from '@solidjs/start';
+import { Suspense } from 'solid-js';
+import 'virtual:uno.css';
 import './app.css';
 
 export default function App() {
-	const [count, setCount] = createSignal(0);
-
 	return (
-		<main>
-			<h1>Hello world!</h1>
-			<button class="increment" onClick={() => setCount(count() + 1)}>
-				Clicks: {count()}
-			</button>
-			<p>
-				Visit{' '}
-				<a href="https://start.solidjs.com" target="_blank">
-					start.solidjs.com
-				</a>{' '}
-				<span class="text-green-600">
-					to learn how to build SolidStart app.
-				</span>
-			</p>
-		</main>
+		<Router
+			root={(props) => (
+				<>
+					<Suspense fallback={<div>Loading...</div>}>{props.children}</Suspense>
+				</>
+			)}
+		>
+			<FileRoutes />
+		</Router>
 	);
 }
