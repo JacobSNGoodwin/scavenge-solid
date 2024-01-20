@@ -18,9 +18,11 @@ export default function Login() {
 			// Set load options here...
 		});
 
-		const signInComponent = document.querySelector('#sign-in');
+		const signInComponent = document.querySelector<HTMLDivElement>('#sign-in');
 
-		clerk.openSignIn(signInComponent);
+		if (signInComponent) {
+			clerk.mountSignIn(signInComponent);
+		}
 	});
 
 	return (
@@ -32,10 +34,10 @@ export default function Login() {
 			>
 				<div>Login</div>
 			</button>
-			<Show when={isLoginExpanded()}>
-				<div id="sign-in" />
-			</Show>
-			{/* <div id="sign-in" /> */}
+			{/* <Show when={isLoginExpanded()}> */}
+			{/* 	<div id="sign-in" /> */}
+			{/* </Show> */}
+			<div id="sign-in" />
 		</div>
 	);
 }
