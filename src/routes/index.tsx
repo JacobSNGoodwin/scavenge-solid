@@ -1,4 +1,15 @@
+import { RouteDefinition, createAsync } from '@solidjs/router';
+import { getUser } from '~/server';
+
+export const route = {
+	load() {
+		getUser();
+	},
+} satisfies RouteDefinition;
+
 export default function Home() {
+	const data = createAsync(getUser);
+
 	return (
 		<main class="max-w-screen-md mx-auto mt-4">
 			<h1 class="text-3xl text-center">Scavenge</h1>
@@ -10,6 +21,7 @@ export default function Home() {
 					Join
 				</a>
 			</div>
+			<p>Placeholder user: {data()?.fullName ?? 'Must be no user!'}</p>
 		</main>
 	);
 }
