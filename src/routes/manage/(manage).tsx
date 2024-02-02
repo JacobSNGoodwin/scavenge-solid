@@ -1,11 +1,15 @@
 import { User } from '@clerk/backend';
-import { cache, createAsync } from '@solidjs/router';
+import { cache, createAsync, redirect } from '@solidjs/router';
 import { Show, getRequestEvent } from 'solid-js/web';
 
 const getUser = cache(async () => {
 	'use server';
 	const event = getRequestEvent();
-	console.info('recevied a request event with locals', event?.locals);
+	// console.info('recevied a request event with locals', event?.locals);
+
+	if (!event?.locals?.user) {
+		throw redirect('/login');
+	}
 	return (event?.locals?.user as User).fullName;
 }, 'user');
 

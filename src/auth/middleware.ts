@@ -2,18 +2,22 @@ import {
 	FetchEvent,
 	appendHeader,
 	sendRedirect,
-	getQuery,
-	setHeader,
+	getResponseHeaders,
+	getRequestHeaders,
 } from '@solidjs/start/server';
-import clerk from './clerk';
+import clerk from './clerkClientServer';
 
 const authMiddleware = async (event: FetchEvent) => {
+	console.debug('all the request headers\n\n', getRequestHeaders(event));
 	const request = event.request;
 
 	const requestState = await clerk.authenticateRequest(request);
 
+	// TODO - why is requestState.status always signed-out?
+	// when we receive a post request from the server?
 	console.info('The request state', {
-		requestUrl: request.url,
+		// event,
+		// request,
 		requestState,
 	});
 
@@ -43,13 +47,18 @@ const authMiddleware = async (event: FetchEvent) => {
 		appendHeader(event, name, value);
 	});
 
+	console.debug('all of the response headers!', getResponseHeaders(event));
+
 	if (requestState.status === 'signed-out') {
 		console.debug('user is signed out - returning null for user');
 		event.locals.user = null;
 	}
 
 	if (requestState.status === 'handshake') {
-		console.debug('returning handshake redirect');
+		console.debug(
+			'returning handshake redirect',
+			requestState.headers.get('location'),
+		);
 		return sendRedirect(event, requestState.headers.get('location') ?? '', 307);
 	}
 
@@ -61,14 +70,6 @@ const authMiddleware = async (event: FetchEvent) => {
 		return;
 	}
 
-	// don't scare the hell out of users with clerk query parameters :)
-	const url = new URL(request.url);
-	url.searchParams.delete('__clerk_handshake');
-	url.searchParams.delete('__clerk_help');
-
-	setHeader(event, 'Location', url.toString());
-
-	console.log(url);
 	event.locals.user = await clerk.users.getUser(auth.userId);
 };
 
