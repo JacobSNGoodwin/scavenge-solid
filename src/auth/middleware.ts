@@ -1,10 +1,10 @@
+import { FetchEvent } from '@solidjs/start/server';
 import {
-	FetchEvent,
 	appendHeader,
 	sendRedirect,
 	getResponseHeaders,
 	getRequestHeaders,
-} from '@solidjs/start/server';
+} from 'vinxi/server';
 import clerk from './clerkClientServer';
 
 const authMiddleware = async (event: FetchEvent) => {
