@@ -1,6 +1,7 @@
 import { defineConfig } from '@solidjs/start/config';
 import UnoCSS from 'unocss/vite';
 import { presetIcons, presetWebFonts, presetUno } from 'unocss';
+import authMiddleware from './src/auth/middleware';
 
 export default defineConfig({
 	plugins: [
@@ -23,4 +24,7 @@ export default defineConfig({
 			],
 		}),
 	],
+	start: {
+		middleware: './src/middleware.ts',
+	},
 });
