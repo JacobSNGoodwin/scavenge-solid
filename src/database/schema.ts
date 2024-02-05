@@ -1,13 +1,4 @@
-import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import {
-	pgTable,
-	bigint,
-	varchar,
-	index,
-	text,
-	uuid,
-	timestamp,
-} from 'drizzle-orm/pg-core';
+import { pgTable, index, text, uuid, timestamp } from 'drizzle-orm/pg-core';
 
 export const user = pgTable(
 	'user',
