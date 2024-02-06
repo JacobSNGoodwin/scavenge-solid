@@ -25,6 +25,10 @@ declare module 'lucia' {
 		name: string;
 		email: string;
 		imageUrl: string | null;
+		connections: {
+			github?: string;
+			facebook?: string;
+		};
 	}
 	// interface DatabaseSessionAttributes {
 	// ADd additional attributes here
