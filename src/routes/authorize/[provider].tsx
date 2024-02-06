@@ -58,6 +58,7 @@ const getAuthUrl = cache(async (provider: string) => {
 
 	// mutating event response or calling vinxi/http methods does not work for some reason
 	// but the cookies are still set.
+
 	return new Response(null, {
 		headers: {
 			Location: url.href,

@@ -1,4 +1,11 @@
-import { pgTable, index, text, uuid, timestamp } from 'drizzle-orm/pg-core';
+import {
+	pgTable,
+	index,
+	text,
+	uuid,
+	timestamp,
+	json,
+} from 'drizzle-orm/pg-core';
 
 export const user = pgTable(
 	'user',
@@ -7,6 +14,12 @@ export const user = pgTable(
 		email: text('email').unique().notNull(),
 		name: text('name').notNull(),
 		imageUrl: text('image_url'),
+		connections: json('connections')
+			.$type<{
+				github?: string;
+				facebook?: string;
+			}>()
+			.default({}),
 	},
 	(table) => {
 		return {

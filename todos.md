@@ -1,9 +1,9 @@
 ## Todos
 
-- [ ] - add arctic for handling Oauth with FB and Google
+- [x] - add arctic for handling Oauth with FB and Google
+- [ ] - how to handle connections with the same email?
 - [ ] - add callback handle page to verify user
 - [ ] - add middleware to check user per request
-- [ ] - how to handle connections with the same email?
   - maybe create a connections table with id, user_id, connection, connection_id
 - [ ] - maybe move authorize and verify functions to `auth` folder
 

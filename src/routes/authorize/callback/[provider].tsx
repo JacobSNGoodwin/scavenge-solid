@@ -1,5 +1,7 @@
 import { Suspense } from 'solid-js';
-import { RouteDefinition, RouteSectionProps } from '@solidjs/router';
+import { RouteDefinition, RouteSectionProps, cache } from '@solidjs/router';
+
+const verifyAuth = cache(async () => {}, 'verify-provider');
 
 export const route = {
 	load: ({ params }) => {},
