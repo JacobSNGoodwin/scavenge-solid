@@ -1,11 +1,15 @@
 import { StartServer, createHandler } from '@solidjs/start/server';
+import { webcrypto } from 'node:crypto';
+// declare module '@solidjs/start/server' {
+// 	interface RequestEventLocals {
+// 		n: number;
+// 		s: string;
+// 	}
+// }
 
-declare module '@solidjs/start/server' {
-	interface RequestEventLocals {
-		n: number;
-		s: string;
-	}
-}
+// this is needed for oslo code creation
+// @ts-ignore
+globalThis.crypto = webcrypto;
 
 export default createHandler(() => (
 	<StartServer
