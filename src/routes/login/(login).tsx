@@ -1,9 +1,18 @@
-import { useAuthClient } from '~/components/AuthContext';
-
 export default function Login() {
-	// CLERK V5 docs
-	// https://github.com/clerk/javascript/tree/%40clerk/clerk-js%405.0.0-beta-v5.20/packages/clerk-js
-	const clerk = useAuthClient();
-
-	return <p>Login page: {clerk ?? 'Nada'}</p>;
+	return (
+		<main class="max-w-screen-md mx-auto mt-4">
+			<a
+				href="/authorize/google"
+				class="btn block w-24 text-center mx-auto my-2"
+			>
+				Google
+			</a>
+			<a
+				href="/authorize/facebook"
+				class="btn block w-24 text-center mx-auto my-2"
+			>
+				Facebook
+			</a>
+		</main>
+	);
 }

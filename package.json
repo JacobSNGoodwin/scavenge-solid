@@ -15,8 +15,10 @@
     "@solidjs/router": "^0.11.2",
     "@solidjs/start": "^0.5.1",
     "@unocss/reset": "^0.58.3",
+    "arctic": "^1.1.4",
     "drizzle-orm": "^0.29.3",
     "lucia": "^3.0.1",
+    "oslo": "^1.0.4",
     "pg": "^8.11.3",
     "solid-js": "^1.8.12",
     "vinxi": "^0.2.1"
