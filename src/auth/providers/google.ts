@@ -1,14 +1,17 @@
-import { Google, generateState, generateCodeVerifier } from 'arctic';
+import { Google } from 'arctic';
+import { generateRandom } from './generateRandom';
 
 const google = new Google(
-	import.meta.env.GOOGLE_CLIENT_ID,
-	import.meta.env.GOOGLE_CLIENT_SECRET,
-	`${import.meta.env.BASE_URL}/auth/callback/google`,
+	process.env.GOOGLE_CLIENT_ID ?? '',
+	process.env.GOOGLE_CLIENT_SECRET ?? '',
+	`${process.env.APP_URL}/auth/callback/google`,
 );
 
 export const googleAuthorize = async () => {
-	const state = generateState();
-	const codeVerifier = generateCodeVerifier();
+	const state = generateRandom();
+	const codeVerifier = generateRandom();
+
+	console.debug('the state and code verifier', { state, codeVerifier });
 
 	const url = await google.createAuthorizationURL(state, codeVerifier, {
 		scopes: ['https://www.googleapis.com/auth/userinfo.email'],
