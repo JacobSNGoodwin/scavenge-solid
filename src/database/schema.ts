@@ -19,7 +19,8 @@ export const user = pgTable(
 				github?: string;
 				facebook?: string;
 			}>()
-			.default({}),
+			.default({})
+			.notNull(),
 	},
 	(table) => {
 		return {
@@ -40,6 +41,7 @@ export const session = pgTable('session', {
 });
 
 export type User = typeof user.$inferSelect;
+export type ProviderConnection = keyof User['connections'];
 export type NewUser = typeof user.$inferInsert;
 export type Session = typeof session.$inferSelect;
 export type NewSession = typeof session.$inferInsert;

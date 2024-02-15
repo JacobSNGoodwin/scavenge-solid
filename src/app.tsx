@@ -1,14 +1,18 @@
 // @refresh reload
 import { Router } from '@solidjs/router';
 import { FileRoutes } from '@solidjs/start';
-import { Suspense } from 'solid-js';
+import { ErrorBoundary, Suspense } from 'solid-js';
 
 export default function App() {
 	return (
 		<Router
 			root={(props) => (
 				<>
-					<Suspense fallback={<div>Loading...</div>}>{props.children}</Suspense>
+					<Suspense fallback={<div>Loading...</div>}>
+						<ErrorBoundary fallback={<div>Something went wrong</div>}>
+							{props.children}
+						</ErrorBoundary>
+					</Suspense>
 				</>
 			)}
 		>

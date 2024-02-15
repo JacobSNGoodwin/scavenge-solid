@@ -31,6 +31,6 @@ declare module 'lucia' {
 		};
 	}
 	// interface DatabaseSessionAttributes {
-	// ADd additional attributes here
+	// Add additional attributes here
 	// }
 }
