@@ -9,7 +9,11 @@ import {
 import { verifiers } from '~/auth/providers';
 import { getRequestEvent } from 'solid-js/web';
 import { appendHeader, getCookie } from 'vinxi/http';
-import { createUser, findUserByEmail } from '~/database/queries';
+import {
+	createUser,
+	findUserByEmail,
+	updateExistingUser,
+} from '~/database/queries';
 import { nanoid } from 'nanoid';
 import { lucia } from '~/auth/lucia';
 
@@ -32,7 +36,6 @@ const verifyAuth = cache(async (provider: string) => {
 	const verifierParams = {
 		code: url.searchParams?.get('code') ?? '',
 		stateParam: url.searchParams?.get('state') ?? '',
-		codeVerifierParam: url.searchParams?.get('code_verifier') ?? '',
 		stateCookie: getCookie(event, 'state') ?? '',
 		codeVerifierCookie: getCookie(event, 'code_verifier') ?? '',
 	};
@@ -45,9 +48,16 @@ const verifyAuth = cache(async (provider: string) => {
 		const existingUserWithEmail = await findUserByEmail(providerUser.email);
 
 		if (existingUserWithEmail) {
-			console.info('found existing user with email', { providerUser });
-			// TODO check and maybe update connetions
-			throw redirect('/test/error');
+			console.info('found existing user with email. Updating user', {
+				providerUser,
+			});
+
+			const updatedUser = await updateExistingUser(
+				existingUserWithEmail,
+				providerUser,
+			);
+
+			return updatedUser;
 		}
 
 		const newUser = await createUser({ id: nanoid(), ...providerUser });

@@ -1,6 +1,6 @@
 import { DatabaseUserAttributes } from 'lucia';
 import { facebookAuthorize, facebookVerify } from './facebook';
-import { googleAuthorize } from './google';
+import { googleAuthorize, googleVerify } from './google';
 
 // type AuthProvider = 'google' | 'facebook';
 
@@ -27,4 +27,5 @@ export const authorizers: Record<string, AuthorizerFn> = {
 
 export const verifiers: Record<string, VerifierFn> = {
 	facebook: facebookVerify,
+	google: googleVerify,
 };

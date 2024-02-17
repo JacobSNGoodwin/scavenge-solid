@@ -16,3 +16,31 @@ export const createUser = async (newUser: NewUser): Promise<User> => {
 
 	return inserted[0];
 };
+
+// There's a good argument we should be doing this kind of logic here
+// but I don't want to overcomplicate this
+export const updateExistingUser = async (
+	existingUser: User,
+	providerUser: Pick<User, 'connections' | 'imageUrl'>,
+): Promise<User> => {
+	// Update connections
+	const existingConnections = existingUser.connections;
+
+	const updatedConnections = {
+		...existingConnections,
+		...providerUser.connections,
+	};
+
+	// Not sure if I want this behavior or not
+	const updatedImageUrl = providerUser?.imageUrl ?? existingUser.imageUrl;
+
+	const updated = await db
+		.update(user)
+		.set({
+			connections: updatedConnections,
+			imageUrl: updatedImageUrl,
+		})
+		.returning();
+
+	return updated[0];
+};
