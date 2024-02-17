@@ -1,4 +1,6 @@
-## Todos
+# Todos
+
+## Authorizatin and User Management
 
 - [x] - add arctic for handling Oauth with FB and Google
 - [x] - how to handle connections with the same email?
@@ -10,9 +12,20 @@
 - [ ] - maybe move authorize and verify functions to `auth` folder
 
 
+## Error Handling
+
 - [ ] - how to handle errors. Error Boundary? Error page?
   - see [solid-router issue](https://github.com/solidjs/solid-router/issues/374)
 - [ ] - not found page
 - [ ] - default Suspense loading component for authorizers and router
 
+
+## Logging
+
+- [ ] - how to handle browser/server
 - [ ] - add a true logger (pinia/winston)
+
+
+## UI
+
+- [ ] - style login links and buttons 

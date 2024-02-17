@@ -57,7 +57,21 @@ const verifyAuth = cache(async (provider: string) => {
 				providerUser,
 			);
 
-			return updatedUser;
+			console.debug('the updated user, creating session', { updatedUser });
+
+			const session = await lucia.createSession(updatedUser.id, {});
+
+			console.debug('the session', session);
+
+			// Handle Error: 'Cannot set headers after they are sent to the client'
+
+			appendHeader(
+				event,
+				'Set-Cookie',
+				lucia.createSessionCookie(session.id).serialize(),
+			);
+
+			throw redirect('/');
 		}
 
 		const newUser = await createUser({ id: nanoid(), ...providerUser });
@@ -70,8 +84,9 @@ const verifyAuth = cache(async (provider: string) => {
 		);
 
 		// redirect
-		return newUser;
+		throw redirect('/');
 	} catch (e) {
+		console.error('Error verifying auth', e);
 		throw redirect('/test/error');
 	}
 }, 'verify-auth');
