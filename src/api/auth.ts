@@ -1,7 +1,7 @@
-import { cache, redirect } from '@solidjs/router';
+import { action, cache, redirect } from '@solidjs/router';
 import { nanoid } from 'nanoid';
 import { getRequestEvent } from 'solid-js/web';
-import { appendHeader, getCookie, setCookie } from 'vinxi/http';
+import { appendHeader, deleteCookie, getCookie, setCookie } from 'vinxi/http';
 import { lucia } from '~/auth/lucia';
 import { authorizers, verifiers } from '~/auth/providers';
 import {
@@ -91,6 +91,9 @@ export const verifyAuth = cache(async (provider: string) => {
 		codeVerifierCookie: getCookie(event, 'code_verifier') ?? '',
 	};
 
+	deleteCookie(event, 'state');
+	deleteCookie(event, 'code_verifier');
+
 	console.debug('Authorizing with params', verifierParams);
 
 	const providerUser = await verifier(verifierParams);
@@ -131,3 +134,24 @@ export const verifyAuth = cache(async (provider: string) => {
 	// redirect
 	throw redirect('/');
 }, 'verify-auth');
+
+export const deleteUserSession = action(async () => {
+	'use server';
+
+	const event = getRequestEvent();
+
+	const sessionId = event?.locals.session?.id;
+
+	if (sessionId) {
+		const sessionCookie = lucia.createBlankSessionCookie();
+		console.debug(
+			'the sessionCookie',
+			sessionCookie,
+			sessionCookie.serialize(),
+		);
+		appendHeader(event, 'Set-Cookie', sessionCookie.serialize());
+		await lucia.invalidateSession(sessionId);
+	}
+
+	throw redirect('/');
+});

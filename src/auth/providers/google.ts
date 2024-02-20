@@ -40,6 +40,13 @@ export const googleVerify = async ({
 	stateParam: string;
 	codeVerifierCookie: string;
 }) => {
+	console.info('googleVerify params', {
+		code,
+		stateCookie,
+		stateParam,
+		codeVerifierCookie,
+	});
+
 	if (!code || !stateCookie || !stateParam) {
 		throw new Error('Missing auth parameter');
 	}

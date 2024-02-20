@@ -12,10 +12,9 @@ export const route = {
 	},
 } satisfies RouteDefinition;
 
-// TODO - how to handle errors here?
 const ProviderLogin = (props: RouteSectionProps) => {
 	const provider = () => props.params.provider;
-	createAsync(() => getAuthUrl(provider()));
+	createAsync(() => getAuthUrl(provider()), { deferStream: true });
 	return (
 		<Suspense fallback="Loading...">
 			<h1 class="text-xl">Provider Login</h1>
