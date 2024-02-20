@@ -1,4 +1,3 @@
-import { User } from '@clerk/backend';
 import { cache, createAsync, redirect } from '@solidjs/router';
 import { Show, getRequestEvent } from 'solid-js/web';
 
@@ -10,14 +9,14 @@ const getUser = cache(async () => {
 	if (!event?.locals?.user) {
 		throw redirect('/login');
 	}
-	return (event?.locals?.user as User).fullName;
+	return event?.locals?.user?.name ?? 'He who shall remain nameless';
 }, 'user');
 
 export const route = {
 	load: () => getUser(),
 };
 export default function Manage() {
-	const fullName = createAsync(getUser);
+	const fullName = createAsync(() => getUser());
 
 	return (
 		<main class="max-w-screen-md mx-auto my-4">

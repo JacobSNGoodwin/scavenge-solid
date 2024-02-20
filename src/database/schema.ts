@@ -16,7 +16,7 @@ export const user = pgTable(
 		imageUrl: text('image_url'),
 		connections: json('connections')
 			.$type<{
-				github?: string;
+				google?: string;
 				facebook?: string;
 			}>()
 			.default({})

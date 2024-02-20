@@ -41,54 +41,45 @@ const verifyAuth = cache(async (provider: string) => {
 	};
 
 	console.debug('Authorizing with params', verifierParams);
-	try {
-		const providerUser = await verifier(verifierParams);
-		console.debug('the providerUser', providerUser);
 
-		const existingUserWithEmail = await findUserByEmail(providerUser.email);
+	const providerUser = await verifier(verifierParams);
+	console.debug('the providerUser', providerUser);
 
-		if (existingUserWithEmail) {
-			console.info('found existing user with email. Updating user', {
-				providerUser,
-			});
+	const existingUserWithEmail = await findUserByEmail(providerUser.email);
 
-			const updatedUser = await updateExistingUser(
-				existingUserWithEmail,
-				providerUser,
-			);
+	if (existingUserWithEmail) {
+		console.info('found existing user with email. Updating user', {
+			providerUser,
+		});
 
-			console.debug('the updated user, creating session', { updatedUser });
-
-			const session = await lucia.createSession(updatedUser.id, {});
-
-			console.debug('the session', session);
-
-			// Handle Error: 'Cannot set headers after they are sent to the client'
-
-			appendHeader(
-				event,
-				'Set-Cookie',
-				lucia.createSessionCookie(session.id).serialize(),
-			);
-
-			throw redirect('/');
-		}
-
-		const newUser = await createUser({ id: nanoid(), ...providerUser });
-
-		const session = await lucia.createSession(newUser.id, {});
-		appendHeader(
-			event,
-			'Set-Cookie',
-			lucia.createSessionCookie(session.id).serialize(),
+		const updatedUser = await updateExistingUser(
+			existingUserWithEmail,
+			providerUser,
 		);
 
-		// redirect
+		console.debug('the updated user, creating session', { updatedUser });
+
+		const session = await lucia.createSession(updatedUser.id, {});
+		const cookie = lucia.createSessionCookie(session.id).serialize();
+
+		console.debug('the session and cookie', { session, cookie });
+
+		// Handle Error: 'Cannot set headers after they are sent to the client'
+		appendHeader(event, 'Set-Cookie', cookie);
+
 		throw redirect('/');
-	} catch (e) {
-		console.error('Error verifying auth', e);
-		throw redirect('/test/error');
 	}
+
+	const newUser = await createUser({ id: nanoid(), ...providerUser });
+	const session = await lucia.createSession(newUser.id, {});
+	const cookie = lucia.createSessionCookie(session.id).serialize();
+
+	console.debug('the session and cookie', { session, cookie });
+
+	appendHeader(event, 'Set-Cookie', cookie);
+
+	// redirect
+	throw redirect('/');
 }, 'verify-auth');
 
 export const route = {
@@ -99,7 +90,7 @@ export const route = {
 
 const ProviderCallback = (props: RouteSectionProps) => {
 	const provider = () => props.params.provider;
-	const user = createAsync(() => verifyAuth(provider()));
+	const user = createAsync(() => verifyAuth(provider()), { deferStream: true });
 
 	return (
 		<Suspense fallback="Loading...">
