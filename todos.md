@@ -9,9 +9,10 @@
 - [x] - create user in table and add connection after verify (which is per provider)
 - [x] - why am I getting Cannot Set Headers after they are sent to the client?
   - [x] - I think we need `deferStream` so we can set the response headers
-- [ ] - add middleware to check user per request
+- [x] - add middleware to check user per request
   - [x] - maybe create a connections table with id, user_id, connection, connection_id
-- [ ] - maybe move authorize and verify functions to `auth` folder
+- [ ] - maybe move authorize and verify functions to ~~`auth`~~ `API` folder
+- I ended up moving them to the `API` folder because we are handling request/response data. This raises a question about the prudence of the auth/middleware.ts location.
 - [ ] - create a `requireUser` function for pages which checks middleware data
 
 ## Error Handling
