@@ -8,12 +8,18 @@ import {
 } from 'vinxi/http';
 
 import { lucia } from './lucia';
+import logger from '~/logger';
+
+const log = logger.child({ namespace: 'auth-middleware' });
 
 // See - https://lucia-auth.com/getting-started/solidstart
 // but might need some updates for beta 0.5.0
 // Consider saving user and session on event.locals
 const authMiddleware = async (event: FetchEvent) => {
-	console.debug('executing authMiddleware', event.request.method);
+	log.debug(
+		{ method: event.request.method },
+		'executing authMiddleware for method',
+	);
 	if (event.request.method !== 'GET') {
 		const originHeader = getHeader(event, 'Origin') ?? null;
 		const hostHeader = getHeader(event, 'Host') ?? null;
@@ -29,7 +35,7 @@ const authMiddleware = async (event: FetchEvent) => {
 	}
 	const sessionId = getCookie(event, lucia.sessionCookieName) ?? null;
 
-	console.debug('retrieved sessionId from cookie', { sessionId });
+	log.debug({ sessionId }, 'retrieved sessionId from cookie');
 
 	if (!sessionId) {
 		event.locals.session = null;
@@ -39,10 +45,10 @@ const authMiddleware = async (event: FetchEvent) => {
 
 	const { session, user } = await lucia.validateSession(sessionId);
 
-	console.info('Validated session and user', { session, user });
+	log.info({ session, user }, 'Validated session and user');
 
 	if (session?.fresh) {
-		console.info('Setting fresh session cookie');
+		log.debug('Setting fresh session cookie');
 		appendHeader(
 			event,
 			'Set-Cookie',
@@ -51,7 +57,7 @@ const authMiddleware = async (event: FetchEvent) => {
 	}
 
 	if (!session) {
-		console.info('no session found, creating blank session cookie');
+		log.debug('no session found, creating blank session cookie');
 		appendHeader(
 			event,
 			'Set-Cookie',

@@ -26,8 +26,9 @@
 
 ## Logging
 
-- [ ] - how to handle browser/server
-- [ ] - add a true logger (pinia/winston)
+- [x] - how to handle browser/server
+  - looks like pino will use console in browser
+- [ ] - add a true logger (pino/winston)
 
 
 ## UI
