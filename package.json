@@ -12,8 +12,8 @@
   "dependencies": {
     "@iconify-json/tabler": "^1.1.104",
     "@lucia-auth/adapter-drizzle": "^1.0.0",
-    "@solidjs/router": "^0.12.3",
-    "@solidjs/start": "^0.5.9",
+    "@solidjs/router": "^0.12.4",
+    "@solidjs/start": "^0.5.10",
     "@unocss/reset": "^0.58.3",
     "arctic": "^1.1.4",
     "drizzle-orm": "^0.29.3",
