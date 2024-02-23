@@ -28,7 +28,7 @@
 
 - [x] - how to handle browser/server
   - looks like pino will use console in browser
-- [ ] - add a true logger (pino/winston)
+- [x] - add a true logger (pino/winston)
 
 
 ## UI
