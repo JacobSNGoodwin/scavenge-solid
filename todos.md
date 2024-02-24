@@ -18,9 +18,10 @@
 
 ## Error Handling
 
-- [ ] - how to handle errors. Error Boundary? Error page?
+- [x] - how to handle errors. Error Boundary? Error page?
   - see [solid-router issue](https://github.com/solidjs/solid-router/issues/374)
-- [ ] - not found page
+  - seems to be working with router 0.12.4 and start 0.5.10
+- [x] - not found page
 - [ ] - default Suspense loading component for authorizers and router
 
 

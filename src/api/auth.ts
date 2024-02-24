@@ -120,7 +120,7 @@ export const verifyAuth = cache(async (provider: string) => {
 
 		appendHeader(event, 'Set-Cookie', cookie);
 
-		throw redirect('/');
+		throw redirect('/manage');
 	}
 
 	const newUser = await createUser({ id: nanoid(), ...providerUser });

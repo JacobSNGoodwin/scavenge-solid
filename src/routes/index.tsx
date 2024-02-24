@@ -8,9 +8,6 @@ export default function Home() {
 				<a href="/join" class="btn block w-24 text-center mx-auto my-2">
 					Join
 				</a>
-				<a href="/login" class="btn block w-24 text-center mx-auto my-2">
-					Login
-				</a>
 			</div>
 		</main>
 	);
