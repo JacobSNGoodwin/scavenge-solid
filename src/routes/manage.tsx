@@ -24,8 +24,6 @@ export default function Manage(props: RouteSectionProps) {
 	const user = createAsync(() => requireUserOrRedirect('/login'));
 	const logout = useAction(deleteUserSession);
 
-	navigate('/manage', { replace: true });
-
 	return (
 		<Suspense
 			fallback={
