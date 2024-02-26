@@ -22,7 +22,13 @@
   - see [solid-router issue](https://github.com/solidjs/solid-router/issues/374)
   - seems to be working with router 0.12.4 and start 0.5.10
 - [x] - not found page
-- [ ] - default Suspense loading component for authorizers and router
+- [x] - default Suspense loading component for authorizers and router
+
+## Buggish
+
+- [ ] - browser back button use case. After we log out, we can still go back to previous Management page. We need to let solid-router know that this page should ALWAYS validate
+  - see [point 4](https://github.com/solidjs/solid-router?tab=readme-ov-file#cache)
+  - maybe we can create an effect to refetch based on client-side data like existing of cookie. 
 
 
 ## Logging
@@ -34,4 +40,10 @@
 
 ## UI
 
+- [ ] - cleanup loading states in all pages
 - [ ] - style login links and buttons 
+
+## Server-sent events
+
+- [ ] - create a test route with query param. Eventually we'll authorize connection
+- [ ] - need to create some sort of channel or event bus tracking which URL to emit to

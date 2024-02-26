@@ -14,10 +14,16 @@ export const route = {
 
 const ProviderLogin = (props: RouteSectionProps) => {
 	const provider = () => props.params.provider;
-	createAsync(() => getAuthUrl(provider()), { deferStream: true });
+	const url = createAsync(() => getAuthUrl(provider()), { deferStream: true });
 	return (
-		<Suspense fallback="Loading...">
-			<h1 class="text-xl">Provider Login</h1>
+		<Suspense
+			fallback={
+				<div class="h-svh text-3xl flex flex-col justify-center items-center">
+					<div class="i-svg-spinners:3-dots-move bg-violet-500" />
+				</div>
+			}
+		>
+			<div class="invisible">{url()}</div>
 		</Suspense>
 	);
 };

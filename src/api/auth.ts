@@ -9,6 +9,7 @@ import {
 	findUserByEmail,
 	updateExistingUser,
 } from '~/database/queries';
+import { requireUserOrRedirect } from './user';
 
 export const getAuthUrl = cache(async (provider: string) => {
 	'use server';
@@ -153,5 +154,5 @@ export const deleteUserSession = action(async () => {
 		await lucia.invalidateSession(sessionId);
 	}
 
-	throw redirect('/');
+	throw redirect('/', { revalidate: requireUserOrRedirect.keyFor('') });
 });

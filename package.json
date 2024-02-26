@@ -10,6 +10,7 @@
     "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
+    "@iconify-json/svg-spinners": "^1.1.2",
     "@iconify-json/tabler": "^1.1.104",
     "@lucia-auth/adapter-drizzle": "^1.0.0",
     "@solidjs/router": "^0.12.4",

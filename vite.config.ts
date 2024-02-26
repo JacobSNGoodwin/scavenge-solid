@@ -25,5 +25,6 @@ export default defineConfig({
 	],
 	start: {
 		middleware: './src/middleware.ts',
+		ssr: true,
 	},
 });
