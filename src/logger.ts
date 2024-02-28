@@ -8,6 +8,7 @@ const logger = pino({
 		targets: [
 			{
 				target: 'pino-pretty',
+				level: import.meta.env.DEV ? 'debug' : 'info',
 				options: { colorize: true, translateTime: true },
 			},
 		],

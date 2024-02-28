@@ -2,7 +2,7 @@
   "name": "scavenge-solid",
   "type": "module",
   "scripts": {
-    "dev": "vinxi dev",
+    "dev": "vinxi dev --config ./app.config.ts", 
     "build": "vinxi build",
     "start": "vinxi start",
     "db:generate": "bunx drizzle-kit generate:pg",
@@ -13,8 +13,9 @@
     "@iconify-json/svg-spinners": "^1.1.2",
     "@iconify-json/tabler": "^1.1.104",
     "@lucia-auth/adapter-drizzle": "^1.0.0",
+    "@solidjs/meta": "^0.29.2",
     "@solidjs/router": "^0.12.4",
-    "@solidjs/start": "^0.5.10",
+    "@solidjs/start": "^0.6.0",
     "@unocss/reset": "^0.58.3",
     "arctic": "^1.1.4",
     "drizzle-orm": "^0.29.3",
@@ -26,7 +27,8 @@
     "pino-http": "^9.0.0",
     "pino-pretty": "^10.3.1",
     "solid-js": "^1.8.15",
-    "vinxi": "^0.2.1"
+    "unstorage": "^1.10.1",
+    "vinxi": "0.3.4"
   },
   "engines": {
     "node": ">=18"

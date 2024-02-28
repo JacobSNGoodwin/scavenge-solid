@@ -154,5 +154,6 @@ export const deleteUserSession = action(async () => {
 		await lucia.invalidateSession(sessionId);
 	}
 
-	throw redirect('/', { revalidate: requireUserOrRedirect.keyFor('') });
+	console.log('the event router cache on logout', event);
+	throw redirect('/', { revalidate: 'require-user' });
 });

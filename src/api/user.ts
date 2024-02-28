@@ -10,7 +10,7 @@ export const requireUserOrRedirect = cache(
 		'use server';
 		const event = getRequestEvent();
 
-		logger.info('in requireUserOrRedirect', event);
+		logger.info({ event }, 'in requireUserOrRedirect');
 		if (!event?.locals?.user) {
 			throw redirect(redirectPath);
 		}

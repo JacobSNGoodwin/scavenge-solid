@@ -42,6 +42,7 @@
 
 - [ ] - cleanup loading states in all pages
 - [ ] - style login links and buttons 
+- [ ] - FB graph api not returning profile picture, has the API changed or do we need a particular version?
 
 ## Server-sent events
 
