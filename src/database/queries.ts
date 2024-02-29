@@ -6,6 +6,7 @@ import type { User, NewUser } from './schema';
 export const findUserByEmail = async (
 	email: string,
 ): Promise<User | undefined> => {
+	console.debug('finding user with email', { email });
 	const dbUsers = await db.select().from(user).where(eq(user.email, email));
 
 	return dbUsers[0];
@@ -40,6 +41,8 @@ export const updateExistingUser = async (
 			connections: updatedConnections,
 			imageUrl: updatedImageUrl,
 		})
+
+		.where(eq(user.id, existingUser.id))
 		.returning();
 
 	return updated[0];

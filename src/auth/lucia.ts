@@ -14,3 +14,25 @@ export const lucia = new Lucia(adapter, {
 	},
 	getUserAttributes: (attributes) => attributes,
 });
+
+declare module 'lucia' {
+	interface Register {
+		Lucia: typeof lucia;
+		DatabaseUserAttributes: DatabaseUserAttributes;
+		// DatabaseSessionAttributes: DatabaseSessionAttributes;
+	}
+}
+
+// Lets Luica know about other attributes that are available in the database
+export interface DatabaseUserAttributes {
+	name: string;
+	email: string;
+	imageUrl: string | null;
+	connections: {
+		google?: string;
+		facebook?: string;
+	};
+}
+// interface DatabaseSessionAttributes {
+// Add additional attributes here
+// }

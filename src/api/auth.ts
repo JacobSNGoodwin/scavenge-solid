@@ -104,7 +104,7 @@ export const verifyAuth = cache(async (provider: string) => {
 
 	if (existingUserWithEmail) {
 		console.info('found existing user with email. Updating user', {
-			providerUser,
+			existingUserWithEmail,
 		});
 
 		const updatedUser = await updateExistingUser(

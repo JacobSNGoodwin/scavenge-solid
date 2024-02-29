@@ -1,4 +1,4 @@
-import { DatabaseUserAttributes } from 'lucia';
+import type { DatabaseUserAttributes } from '../lucia';
 import { facebookAuthorize, facebookVerify } from './facebook';
 import { googleAuthorize, googleVerify } from './google';
 

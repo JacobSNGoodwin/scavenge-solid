@@ -26,9 +26,10 @@
 
 ## Buggish
 
-- [ ] - browser back button use case. After we log out, we can still go back to previous Management page. We need to let solid-router know that this page should ALWAYS validate
+- [x] - browser back button use case. After we log out, we can still go back to previous Management page. We need to let solid-router know that this page should ALWAYS validate
   - see [point 4](https://github.com/solidjs/solid-router?tab=readme-ov-file#cache)
   - maybe we can create an effect to refetch based on client-side data like existing of cookie. 
+  - solution for now to add `onMount` check for user. This requires user fetched from client
 
 
 ## Logging
@@ -42,9 +43,15 @@
 
 - [ ] - cleanup loading states in all pages
 - [ ] - style login links and buttons 
-- [ ] - FB graph api not returning profile picture, has the API changed or do we need a particular version?
+- [x] - FB graph api not returning profile picture, has the API changed or do we need a particular version?
+  - I have no idea why their graph API sucks. But I added code to hide broken images
 
 ## Server-sent events
 
 - [ ] - create a test route with query param. Eventually we'll authorize connection
 - [ ] - need to create some sort of channel or event bus tracking which URL to emit to
+  - for now, it could be a record with key of the game/hunt mapped to list of event streams
+- useful docs
+  - [creating list of clients](https://digitalocean.com/community/tutorials/nodejs-server-sent-events-build-realtime-app#step-1-building-the-sse-express-backend)
+  - [h3 createEventStream](https://h3.unjs.io/utils/advanced#createeventstreamevent-opts) or [sendStream](https://h3.unjs.io/examples/stream-response#send-a-stream) which is available with vinxi
+    - it looks like vinxi 3.5.0 supports `h3@1.11` which added `createEventStream`, but this isn't quite working with solidjs yet
