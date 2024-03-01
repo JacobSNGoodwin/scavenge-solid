@@ -1,5 +1,13 @@
 import { FetchEvent } from '@solidjs/start/server';
 import pino from 'pino';
+import {
+	getQuery,
+	getRequestHeaders,
+	getRequestIP,
+	getRequestURL,
+	getResponseHeaders,
+	getResponseStatus,
+} from 'vinxi/http';
 
 const logger = pino({
 	name: 'scavenge',
@@ -17,15 +25,21 @@ const logger = pino({
 
 const log = logger.child({ namespace: 'event-logger' });
 
-export const eventLoggerMiddleware = ({
-	nativeEvent,
-	request,
-	response,
-	locals,
-	clientAddress,
-}: FetchEvent) => {
+export const eventLoggerMiddleware = async (event: FetchEvent) => {
 	log.info(
-		{ nativeEvent, request, response, locals, clientAddress },
+		{
+			request: {
+				method: event.request.method,
+				url: event.request.url,
+				host: event.clientAddress,
+				headers: Object.fromEntries(event.request.headers),
+			},
+			response: {
+				status: event.response.status,
+				statusText: event.response.statusText,
+				headers: Object.fromEntries(event.response.headers),
+			},
+		},
 		'FetchEvent data',
 	);
 };

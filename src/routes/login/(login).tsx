@@ -2,7 +2,6 @@ import { RouteDefinition, cache, createAsync } from '@solidjs/router';
 import { redirect } from '@solidjs/router';
 import { Show, Suspense, getRequestEvent } from 'solid-js/web';
 
-// not caching, as this is just a check of the event
 const checkLoggedInUser = cache(async () => {
 	'use server';
 	const event = getRequestEvent();
@@ -25,26 +24,32 @@ export default function Login() {
 		initialValue: true,
 	});
 	return (
-		<main class="max-w-screen-md mx-auto mt-4">
-			<Suspense
-				fallback={<p class="text-center">...Checking if you're logged in...</p>}
-			>
-				{/* To force suspense */}
-				<Show when={!isLoggedIn()}>
+		<Suspense
+			fallback={
+				<div class="h-svh text-6xl flex flex-col justify-center items-center">
+					<div class="i-svg-spinners:3-dots-move bg-gray-500" />
+				</div>
+			}
+		>
+			{/* Reading isLoggedIn to force suspense*/}
+			<Show when={!isLoggedIn()}>
+				<main class="max-w-screen-md mx-auto flex flex-col h-screen justify-center text-xl space-y-8">
 					<a
 						href="/authorize/google"
-						class="btn block w-24 text-center mx-auto my-2"
+						class="btn block w-36 text-center mx-auto flex justify-center items-center space-x-2"
 					>
-						Google
+						<div class="i-logos:google-icon block" />
+						<div>Google</div>
 					</a>
 					<a
 						href="/authorize/facebook"
-						class="btn block w-24 text-center mx-auto my-2"
+						class="btn block w-36 text-center mx-auto flex justify-center items-center space-x-2"
 					>
-						Facebook
+						<div class="i-logos:facebook block" />
+						<div>Facebook</div>
 					</a>
-				</Show>
-			</Suspense>
-		</main>
+				</main>
+			</Show>
+		</Suspense>
 	);
 }

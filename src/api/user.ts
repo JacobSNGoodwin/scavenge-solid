@@ -1,13 +1,14 @@
 import { cache, redirect } from '@solidjs/router';
-import { getRequestEvent } from 'solid-js/web';
+import { getRequestEvent, isServer } from 'solid-js/web';
 import { User } from 'lucia';
 import logger from '~/logger';
 
-// We could actually augment the redirectPath that takes status or other params
-// Also questionable how much we should tie this to router and getRequestEvent. Hrmmm
 export const requireUserOrRedirect = cache(
-	async (redirectPath: string): Promise<User> => {
-		'use server';
+	async (redirectPath: string, isBackForward: boolean): Promise<User> => {
+		if (isBackForward && !isServer) {
+			logger.debug('reloading page on back/forward navigation');
+			window.location.reload();
+		}
 		const event = getRequestEvent();
 
 		logger.debug(event?.locals, 'checking for user in event.locals');
@@ -17,15 +18,8 @@ export const requireUserOrRedirect = cache(
 		}
 
 		logger.debug({ user: event.locals.user }, 'found user');
-		await new Promise((resolve) => setTimeout(resolve, 300));
+		// await new Promise((resolve) => setTimeout(resolve, 300));
 		return event.locals.user;
 	},
 	'require-user',
 );
-
-// add cache key of user id and fetch user
-const getUser = cache(async () => {
-	'use server';
-	await new Promise((resolve) => setTimeout(resolve, 300));
-	return requireUserOrRedirect('/login');
-}, 'user');

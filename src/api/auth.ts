@@ -1,4 +1,4 @@
-import { action, cache, redirect } from '@solidjs/router';
+import { action, cache, redirect, reload } from '@solidjs/router';
 import { nanoid } from 'nanoid';
 import { getRequestEvent } from 'solid-js/web';
 import { appendHeader, deleteCookie, getCookie, setCookie } from 'vinxi/http';
@@ -30,11 +30,11 @@ export const getAuthUrl = cache(async (provider: string) => {
 
 	const { url, state, codeVerifier } = await authorizers[provider]();
 
-	console.debug('Created the following authorizer data', {
-		url,
-		state,
-		codeVerifier,
-	});
+	// console.debug('Created the following authorizer data', {
+	// 	url,
+	// 	state,
+	// 	codeVerifier,
+	// });
 
 	// store state verifier as cookie
 	setCookie(event, 'state', state, {
@@ -132,7 +132,6 @@ export const verifyAuth = cache(async (provider: string) => {
 
 	appendHeader(event, 'Set-Cookie', cookie);
 
-	// redirect
 	throw redirect('/');
 }, 'verify-auth');
 
@@ -154,6 +153,7 @@ export const deleteUserSession = action(async () => {
 		await lucia.invalidateSession(sessionId);
 	}
 
-	console.log('the event router cache on logout', event);
-	throw redirect('/', { revalidate: 'require-user' });
+	throw redirect('', {
+		revalidate: requireUserOrRedirect.key,
+	});
 });
