@@ -1,3 +1,5 @@
+'use server';
+
 import { eq, desc, asc } from 'drizzle-orm';
 import logger from '~/logger';
 import db from './client';
