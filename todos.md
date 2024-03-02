@@ -41,8 +41,8 @@
 
 ## UI
 
-- [ ] - cleanup loading states in all pages
-- [ ] - style login links and buttons 
+- [x] - cleanup loading states in all pages
+- [x] - style login links and buttons 
 - [x] - FB graph api not returning profile picture, has the API changed or do we need a particular version?
   - I have no idea why their graph API sucks. But I added code to hide broken images
 

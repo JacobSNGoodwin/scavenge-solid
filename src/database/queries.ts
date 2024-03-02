@@ -1,7 +1,12 @@
-import { eq } from 'drizzle-orm';
+import { eq, desc, asc } from 'drizzle-orm';
+import logger from '~/logger';
 import db from './client';
-import { user } from './schema';
-import type { User, NewUser } from './schema';
+import { scavengerHunts, user } from './schema';
+import type { NewUser, User } from './schema';
+
+/*
+ * User
+ */
 
 export const findUserByEmail = async (
 	email: string,
@@ -46,4 +51,17 @@ export const updateExistingUser = async (
 		.returning();
 
 	return updated[0];
+};
+
+/*
+ * Scavenger Hunts
+ */
+export const getScavengerHuntsByUserId = async (userId: string) => {
+	const result = await db
+		.select()
+		.from(scavengerHunts)
+		.where(eq(scavengerHunts.created_by, userId))
+		.orderBy(asc(scavengerHunts.title));
+	logger.debug({ userId, result }, 'fetched scavenger hunts for user');
+	return result;
 };

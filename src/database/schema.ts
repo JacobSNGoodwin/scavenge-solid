@@ -50,7 +50,7 @@ export type NewSession = typeof session.$inferInsert;
  * Application tables
  */
 export const scavengerHunts = pgTable('scavenger_hunts', {
-	id: uuid('id').defaultRandom().primaryKey(),
+	id: text('id').primaryKey(),
 	title: text('title').notNull(),
 	created_by: text('created_by')
 		.references(() => user.id)

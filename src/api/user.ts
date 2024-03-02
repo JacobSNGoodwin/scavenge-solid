@@ -1,14 +1,11 @@
 import { cache, redirect } from '@solidjs/router';
-import { getRequestEvent, isServer } from 'solid-js/web';
+import { getRequestEvent } from 'solid-js/web';
 import { User } from 'lucia';
 import logger from '~/logger';
 
 export const requireUserOrRedirect = cache(
-	async (redirectPath: string, isBackForward: boolean): Promise<User> => {
-		if (isBackForward && !isServer) {
-			logger.debug('reloading page on back/forward navigation');
-			window.location.reload();
-		}
+	async (redirectPath: string): Promise<User> => {
+		'use server';
 		const event = getRequestEvent();
 
 		logger.debug(event?.locals, 'checking for user in event.locals');
@@ -17,9 +14,9 @@ export const requireUserOrRedirect = cache(
 			throw redirect(redirectPath);
 		}
 
-		logger.debug({ user: event.locals.user }, 'found user');
+		// logger.debug({ user: event.locals.user }, 'found user');
 		// await new Promise((resolve) => setTimeout(resolve, 300));
 		return event.locals.user;
 	},
-	'require-user',
+	'requireUser',
 );

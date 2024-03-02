@@ -3,10 +3,12 @@ import { createAsync, useAction } from '@solidjs/router';
 import { Show, Suspense, isServer } from 'solid-js/web';
 import { deleteUserSession } from '~/api/auth';
 import { requireUserOrRedirect } from '~/api/user';
+import logger from '~/logger';
 
 export const route = {
 	load: async ({ intent }) => {
-		requireUserOrRedirect('/login', intent === 'native');
+		// back cache to be fixed soon
+		requireUserOrRedirect('/login');
 	},
 } satisfies RouteDefinition;
 
