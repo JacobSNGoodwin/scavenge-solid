@@ -65,3 +65,13 @@ export const getScavengerHuntsByUserId = async (userId: string) => {
 	logger.debug({ userId, result }, 'fetched scavenger hunts for user');
 	return result;
 };
+
+export const getScavengerHuntById = async (id: string) => {
+	const result = await db
+		.select()
+		.from(scavengerHunts)
+		.where(eq(scavengerHunts.id, id));
+
+	logger.debug({ result }, 'fetched scavenger hunt details');
+	return result[0];
+};

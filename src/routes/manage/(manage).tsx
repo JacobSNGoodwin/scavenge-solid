@@ -4,7 +4,7 @@ import { getUserScavengerHunts } from '~/api/scavengerHunts';
 
 export const route = {
 	load: async () => {
-		// getUserScavengerHunts();
+		getUserScavengerHunts();
 	},
 } satisfies RouteDefinition;
 
