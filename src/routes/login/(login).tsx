@@ -33,7 +33,7 @@ export default function Login() {
 		>
 			{/* Reading isLoggedIn to force suspense*/}
 			<Show when={!isLoggedIn()}>
-				<main class="max-w-screen-md mx-auto flex flex-col h-screen justify-center text-xl space-y-8">
+				<main class="max-w-screen-md mx-auto flex flex-col h-screen justify-center text-xl space-y-4">
 					<a
 						href="/authorize/google"
 						class="btn block w-36 text-center mx-auto flex justify-center items-center space-x-2"

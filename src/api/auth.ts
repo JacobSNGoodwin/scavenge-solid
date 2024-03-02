@@ -1,4 +1,4 @@
-import { action, cache, redirect, reload } from '@solidjs/router';
+import { action, cache, redirect } from '@solidjs/router';
 import { nanoid } from 'nanoid';
 import { getRequestEvent } from 'solid-js/web';
 import { appendHeader, deleteCookie, getCookie, setCookie } from 'vinxi/http';
@@ -10,6 +10,7 @@ import {
 	updateExistingUser,
 } from '~/database/queries';
 import { requireUserOrRedirect } from './user';
+import logger from '~/logger';
 
 export const getAuthUrl = cache(async (provider: string) => {
 	'use server';
@@ -138,6 +139,7 @@ export const verifyAuth = cache(async (provider: string) => {
 export const deleteUserSession = action(async () => {
 	'use server';
 
+	logger.debug('logging out');
 	const event = getRequestEvent();
 
 	const sessionId = event?.locals.session?.id;

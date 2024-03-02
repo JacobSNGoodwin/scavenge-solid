@@ -24,6 +24,7 @@ export const getUserScavengerHunts = cache(async () => {
 }, 'userScavengerHunts');
 
 export const getScavengerHuntDetails = cache(async (huntId: string) => {
+	'use server';
 	const request = getRequestEvent();
 	const userId = request?.locals.user?.id;
 

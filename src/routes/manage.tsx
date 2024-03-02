@@ -6,7 +6,7 @@ import { deleteUserSession } from '~/api/auth';
 import { requireUserOrRedirect } from '~/api/user';
 
 export const route = {
-	load: async ({ intent }) => {
+	load: async () => {
 		// back cache to be fixed soon
 		requireUserOrRedirect('/login');
 	},
