@@ -8,6 +8,8 @@ export default defineConfig({
 			UnoCSS({
 				shortcuts: [
 					{
+						'text-input':
+							'border-1 border-gray focus:border-2 rounded-md p-2 block focus:outline-none',
 						btn: 'py-2 px-4 font-semibold rounded-lg shadow-md hover:shadow-lg hover:opacity-90',
 					},
 				],

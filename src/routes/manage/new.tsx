@@ -2,12 +2,16 @@ import ScavengerHuntForm from '~/components/ScavengerHuntForm';
 
 export default function NewScavengerHunt() {
 	return (
-		<div>
-			<h2 class="text-xl text-center">Create New ONe</h2>
-			<div class="text-center mx-auto">
+		<div class="mt-6">
+			<h2 class="text-xl text-center">New Scavenger Hunt</h2>
+			<div class="mx-auto px-8">
 				<ScavengerHuntForm
-					onSubmit={() => {
-						console.log('clickaroo');
+					onSubmit={(form) => {
+						console.log(form);
+					}}
+					initialForm={{
+						title: 'Cool Hunt',
+						description: 'This is a cool hunt',
 					}}
 				/>
 			</div>
