@@ -10,6 +10,7 @@ export const route = {
 
 export default function Manage() {
 	const scavengerHunts = createAsync(() => getUserScavengerHunts());
+
 	return (
 		<>
 			<main class="max-w-screen-md mx-auto my-4">
@@ -21,12 +22,12 @@ export default function Manage() {
 						</div>
 					}
 				>
-					<button
-						class="btn cursor-pointer bg-violet-500 text-white mx-auto block"
-						type="button"
+					<a
+						href="/manage/new"
+						class="btn w-24 cursor-pointer bg-violet-500 text-white text-center mx-auto block"
 					>
 						Create
-					</button>
+					</a>
 					<div class="my-8">
 						<For
 							each={scavengerHunts()}
