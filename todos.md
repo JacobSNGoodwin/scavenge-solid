@@ -46,6 +46,11 @@
 - [x] - FB graph api not returning profile picture, has the API changed or do we need a particular version?
   - I have no idea why their graph API sucks. But I added code to hide broken images
 
+## Scavenger Hunt Form
+- [ ] - handle client-side validation
+- [ ] - server-side validation
+- [ ] - do we handle in same action? Should we client-side validate?
+
 ## Server-sent events
 
 - [ ] - create a test route with query param. Eventually we'll authorize connection
