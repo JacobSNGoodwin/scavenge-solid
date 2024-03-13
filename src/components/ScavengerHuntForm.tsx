@@ -9,19 +9,23 @@ export const scavengerHuntSchema = z.object({
 });
 
 export type ScavengerHuntFormFields = z.infer<typeof scavengerHuntSchema>;
+type ScavengerHuntFormFieldsErrors = {
+	title?: string;
+	description?: string;
+};
 
 type ScavengerHuntFormProps = {
 	initialForm?: ScavengerHuntFormFields;
+	initialErrors?: ScavengerHuntFormFieldsErrors;
 	onSubmit: (form: ScavengerHuntFormFields) => void;
+	disabled: boolean;
 };
 
 export default function ScavengerHuntForm(props: ScavengerHuntFormProps) {
 	let titleRef: HTMLInputElement | undefined;
 	let descriptionRef: HTMLTextAreaElement | undefined;
-	const [formErrors, setFormErrors] = createStore<ScavengerHuntFormFields>({
-		title: '',
-		description: '',
-	});
+	const [formErrors, setFormErrors] =
+		createStore<ScavengerHuntFormFieldsErrors>({});
 
 	const validateAndSubmit = () => {
 		const formFields = {
@@ -61,6 +65,7 @@ export default function ScavengerHuntForm(props: ScavengerHuntFormProps) {
 					value={props?.initialForm?.title ?? ''}
 					type="text"
 					class="text-input focus:border-violet-500"
+					disabled={props.disabled}
 				/>
 				<Show when={formErrors.title}>
 					<p class="text-red">{formErrors.title}</p>
@@ -73,6 +78,7 @@ export default function ScavengerHuntForm(props: ScavengerHuntFormProps) {
 					name="description"
 					rows="3"
 					class="text-input focus:border-violet-500"
+					disabled={props.disabled}
 				>
 					{props?.initialForm?.description ?? ''}
 				</textarea>
@@ -81,6 +87,7 @@ export default function ScavengerHuntForm(props: ScavengerHuntFormProps) {
 				type="submit"
 				onClick={validateAndSubmit}
 				class="btn bg-violet-500 text-white my-4 block mx-auto"
+				disabled={props.disabled}
 			>
 				<Show when={props.initialForm} fallback="Submit">
 					Update

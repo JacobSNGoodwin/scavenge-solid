@@ -1,10 +1,12 @@
-import { cache, redirect } from '@solidjs/router';
+import { action, cache, redirect } from '@solidjs/router';
 import { getRequestEvent } from 'solid-js/web';
+import logger from '~/logger';
 import {
+	createScavengerHunt,
 	getScavengerHuntById,
 	getScavengerHuntsByUserId,
 } from '../database/queries';
-import logger from '~/logger';
+import { nanoid } from 'nanoid';
 
 const log = logger.child({ module: 'api/scavengerHunts' });
 
@@ -44,3 +46,36 @@ export const getScavengerHuntDetails = cache(async (huntId: string) => {
 
 	return scavengerHunt;
 }, 'scavengerHunt');
+
+export const createNewScavengerHunt = action(
+	async (title: string, description: string) => {
+		'use server';
+		const request = getRequestEvent();
+		const userId = request?.locals.user?.id;
+
+		if (!userId) {
+			throw redirect('/login');
+		}
+
+		const id = nanoid();
+
+		logger.info(
+			{
+				id,
+				title,
+				description,
+				created_by: userId,
+			},
+			'creating new scavenger hunt',
+		);
+
+		const createdHunt = await createScavengerHunt({
+			id,
+			title,
+			description,
+			created_by: userId,
+		});
+
+		throw redirect(`/manage/${createdHunt.id}`);
+	},
+);

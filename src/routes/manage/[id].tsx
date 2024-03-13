@@ -21,7 +21,7 @@ export default function Manage() {
 				<Suspense
 					fallback={
 						<div class="h-svh text-6xl flex flex-col justify-center items-center">
-							<div class="i-svg-spinners:3-dots-move bg-gray-500" />
+							<div class="i-svg-spinners:3-dots-move bg-orange-500" />
 						</div>
 					}
 				>
@@ -29,6 +29,9 @@ export default function Manage() {
 					<h1 class="text-3xl text-center mb-2">
 						{scavengerHuntDetails()?.title}
 					</h1>
+					<h2 class="text-xl text-center mb-2">
+						{scavengerHuntDetails()?.description}
+					</h2>
 				</Suspense>
 			</main>
 		</>

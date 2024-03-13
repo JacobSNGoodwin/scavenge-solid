@@ -10,7 +10,7 @@ export default defineConfig({
 					{
 						'text-input':
 							'border-1 border-gray focus:border-2 rounded-md p-2 block focus:outline-none',
-						btn: 'py-2 px-4 font-semibold rounded-lg shadow-md hover:shadow-lg hover:opacity-90',
+						btn: 'py-2 px-4 font-semibold rounded-lg shadow-md hover:shadow-lg hover:opacity-90 disabled:bg-gray-300 disabled:pointer-events-none',
 					},
 				],
 				presets: [

@@ -1,9 +1,10 @@
 'use server';
 
-import { eq, desc, asc } from 'drizzle-orm';
+import { redirect } from '@solidjs/router';
+import { asc, eq } from 'drizzle-orm';
 import logger from '~/logger';
 import db from './client';
-import { scavengerHunts, user } from './schema';
+import { NewScavengerHunt, scavengerHunts, user } from './schema';
 import type { NewUser, User } from './schema';
 
 /*
@@ -76,4 +77,14 @@ export const getScavengerHuntById = async (id: string) => {
 
 	logger.debug({ result }, 'fetched scavenger hunt details');
 	return result[0];
+};
+
+export const createScavengerHunt = async (hunt: NewScavengerHunt) => {
+	const newHunts = await db
+		.insert(scavengerHunts)
+		.values(hunt)
+		.returning({ id: scavengerHunts.id });
+
+	await new Promise((resolve) => setTimeout(resolve, 2000));
+	return newHunts[0];
 };

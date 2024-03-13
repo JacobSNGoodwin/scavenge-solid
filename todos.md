@@ -47,13 +47,13 @@
   - I have no idea why their graph API sucks. But I added code to hide broken images
 
 ## Scavenger Hunt Form
-- [ ] - handle client-side validation
+- [x] - handle client-side validation
 - [ ] - server-side validation
-- [ ] - do we handle in same action? Should we client-side validate?
+- [x] - do we handle in same action? Should we client-side validate?
 
 ## Server-sent events
 
-- [ ] - create a test route with query param. Eventually we'll authorize connection
+- [x] - create a test route with query param. Eventually we'll authorize connection
 - [ ] - need to create some sort of channel or event bus tracking which URL to emit to
   - for now, it could be a record with key of the game/hunt mapped to list of event streams
 - useful docs
