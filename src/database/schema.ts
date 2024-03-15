@@ -1,11 +1,4 @@
-import {
-	pgTable,
-	index,
-	text,
-	uuid,
-	timestamp,
-	json,
-} from 'drizzle-orm/pg-core';
+import { pgTable, index, text, timestamp, json } from 'drizzle-orm/pg-core';
 
 export const user = pgTable(
 	'user',

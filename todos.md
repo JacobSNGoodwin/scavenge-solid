@@ -48,7 +48,9 @@
 
 ## Scavenger Hunt Form
 - [x] - handle client-side validation
+- [x] - create middleware for intentional delay
 - [ ] - server-side validation
+- [ ] - create validator function to return normalized error strings per field which can be run on client and server
 - [x] - do we handle in same action? Should we client-side validate?
 
 ## Server-sent events

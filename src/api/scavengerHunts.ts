@@ -1,12 +1,14 @@
 import { action, cache, redirect } from '@solidjs/router';
+import { nanoid } from 'nanoid';
 import { getRequestEvent } from 'solid-js/web';
+import { z } from 'zod';
 import logger from '~/logger';
 import {
 	createScavengerHunt,
 	getScavengerHuntById,
 	getScavengerHuntsByUserId,
 } from '../database/queries';
-import { nanoid } from 'nanoid';
+import { scavengerHuntSchema } from '~/validators';
 
 const log = logger.child({ module: 'api/scavengerHunts' });
 
@@ -48,8 +50,18 @@ export const getScavengerHuntDetails = cache(async (huntId: string) => {
 }, 'scavengerHunt');
 
 export const createNewScavengerHunt = action(
-	async (title: string, description: string) => {
+	async (fields: z.infer<typeof scavengerHuntSchema>) => {
 		'use server';
+
+		const result = scavengerHuntSchema.safeParse(fields);
+
+		if (!result.success) {
+			logger.warn({ error: result.error }, 'invalid scavenger hunt fields');
+			return result.error;
+		}
+
+		const { title, description } = result.data;
+
 		const request = getRequestEvent();
 		const userId = request?.locals.user?.id;
 

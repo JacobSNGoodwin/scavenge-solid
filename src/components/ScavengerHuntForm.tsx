@@ -2,13 +2,9 @@ import { Show } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import { z } from 'zod';
 import logger from '~/logger';
+import { scavengerHuntSchema } from '~/validators';
 
-export const scavengerHuntSchema = z.object({
-	title: z.string().trim().min(1, { message: 'Title cannot be empty' }),
-	description: z.string().trim(),
-});
-
-export type ScavengerHuntFormFields = z.infer<typeof scavengerHuntSchema>;
+type ScavengerHuntFormFields = z.infer<typeof scavengerHuntSchema>;
 type ScavengerHuntFormFieldsErrors = {
 	title?: string;
 	description?: string;

@@ -21,19 +21,20 @@ const authMiddleware = async (event: FetchEvent) => {
 		'executing authMiddleware for method',
 	);
 	if (event.request.method !== 'GET') {
-		const originHeader = getHeader(event, 'Origin') ?? null;
-		const hostHeader = getHeader(event, 'Host') ?? null;
+		const originHeader = getHeader(event.nativeEvent, 'Origin') ?? null;
+		const hostHeader = getHeader(event.nativeEvent, 'Host') ?? null;
 
 		if (
 			!originHeader ||
 			!hostHeader ||
 			!verifyRequestOrigin(originHeader, [hostHeader])
 		) {
-			setResponseStatus(event, 403);
+			setResponseStatus(event.nativeEvent, 403);
 			return;
 		}
 	}
-	const sessionId = getCookie(event, lucia.sessionCookieName) ?? null;
+	const sessionId =
+		getCookie(event.nativeEvent, lucia.sessionCookieName) ?? null;
 
 	log.debug({ sessionId }, 'retrieved sessionId from cookie');
 
@@ -50,7 +51,7 @@ const authMiddleware = async (event: FetchEvent) => {
 	if (session?.fresh) {
 		log.debug('Setting fresh session cookie');
 		appendHeader(
-			event,
+			event.nativeEvent,
 			'Set-Cookie',
 			lucia.createSessionCookie(session.id).serialize(),
 		);
@@ -59,7 +60,7 @@ const authMiddleware = async (event: FetchEvent) => {
 	if (!session) {
 		log.debug('no session found, creating blank session cookie');
 		appendHeader(
-			event,
+			event.nativeEvent,
 			'Set-Cookie',
 			lucia.createBlankSessionCookie().serialize(),
 		);

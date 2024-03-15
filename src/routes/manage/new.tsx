@@ -16,7 +16,7 @@ export default function NewScavengerHunt() {
 			<div class="mx-auto px-8">
 				<ScavengerHuntForm
 					disabled={newSubmission.pending}
-					onSubmit={({ title, description }) => submitNew(title, description)}
+					onSubmit={(fields) => submitNew(fields)}
 				/>
 			</div>
 			<Show when={newSubmission.pending}>
