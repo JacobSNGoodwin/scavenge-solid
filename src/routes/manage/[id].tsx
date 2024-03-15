@@ -20,8 +20,8 @@ export default function Manage() {
 			<main class="max-w-screen-md mx-auto my-4">
 				<Suspense
 					fallback={
-						<div class="h-svh text-6xl flex flex-col justify-center items-center">
-							<div class="i-svg-spinners:3-dots-move bg-orange-500" />
+						<div class="text-6xl flex flex-col justify-center items-center">
+							<div class="i-svg-spinners:3-dots-move bg-violet-500" />
 						</div>
 					}
 				>

@@ -6,7 +6,7 @@ const onBeforeResponse = [eventLoggerMiddleware];
 
 if (import.meta.env.DEV) {
 	onBeforeResponse.push(async () => {
-		await new Promise((resolve) => setTimeout(resolve, 400));
+		await new Promise((resolve) => setTimeout(resolve, 250));
 	});
 }
 

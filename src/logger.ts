@@ -1,13 +1,5 @@
 import { FetchEvent } from '@solidjs/start/server';
 import pino from 'pino';
-import {
-	getQuery,
-	getRequestHeaders,
-	getRequestIP,
-	getRequestURL,
-	getResponseHeaders,
-	getResponseStatus,
-} from 'vinxi/http';
 
 const logger = pino({
 	name: 'scavenge',

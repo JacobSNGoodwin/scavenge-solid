@@ -15,6 +15,7 @@ export default function NewScavengerHunt() {
 			<h2 class="text-xl text-center">New Scavenger Hunt</h2>
 			<div class="mx-auto px-8">
 				<ScavengerHuntForm
+					initialErrors={newSubmission.result}
 					disabled={newSubmission.pending}
 					onSubmit={(fields) => submitNew(fields)}
 				/>

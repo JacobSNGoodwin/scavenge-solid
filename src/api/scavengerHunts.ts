@@ -53,21 +53,21 @@ export const createNewScavengerHunt = action(
 	async (fields: z.infer<typeof scavengerHuntSchema>) => {
 		'use server';
 
-		const result = scavengerHuntSchema.safeParse(fields);
-
-		if (!result.success) {
-			logger.warn({ error: result.error }, 'invalid scavenger hunt fields');
-			return result.error;
-		}
-
-		const { title, description } = result.data;
-
 		const request = getRequestEvent();
 		const userId = request?.locals.user?.id;
 
 		if (!userId) {
 			throw redirect('/login');
 		}
+
+		const result = scavengerHuntSchema.safeParse(fields);
+
+		if (!result.success) {
+			logger.warn({ error: result.error }, 'invalid scavenger hunt fields');
+			return result.error.formErrors.fieldErrors;
+		}
+
+		const { title, description } = result.data;
 
 		const id = nanoid();
 

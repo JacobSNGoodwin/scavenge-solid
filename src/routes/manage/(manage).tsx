@@ -17,7 +17,7 @@ export default function Manage() {
 				<h1 class="text-3xl text-center mb-2">Your Scavenger Hunts</h1>
 				<Suspense
 					fallback={
-						<div class="h-svh text-6xl flex flex-col justify-center items-center">
+						<div class="text-6xl flex flex-col justify-center items-center">
 							<div class="i-svg-spinners:3-dots-move bg-gray-500" />
 						</div>
 					}
@@ -28,7 +28,7 @@ export default function Manage() {
 					>
 						Create
 					</a>
-					<div class="my-8">
+					<div class="my-8 mx-2">
 						<For
 							each={scavengerHunts()}
 							fallback={
