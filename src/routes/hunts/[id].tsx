@@ -3,19 +3,19 @@ import {
 	action,
 	cache,
 	createAsync,
+	revalidate,
 	useParams,
 } from '@solidjs/router';
 import { Show } from 'solid-js';
-import { createStorage, prefixStorage } from 'unstorage';
 import logger from '~/logger';
+import { huntItemsStorage } from '~/storage';
 
-const storage = createStorage(/* opts */);
-const huntItemsStorage = prefixStorage<string>(storage, 'huntItems');
-
-const getHuntItems = cache((id: string) => {
+const getHuntItems = cache(async (id: string) => {
 	'use server';
-	logger.info(`Initializing hunt items for id: ${id}`);
-	return huntItemsStorage.getItem(id);
+	logger.info(`Fetching hunt items for id: ${id}`);
+	const items = await huntItemsStorage.getItem(id);
+	logger.debug({ items }, 'retrieved items');
+	return items;
 }, 'hunt-items');
 
 export const route = {
@@ -24,10 +24,21 @@ export const route = {
 	},
 } satisfies RouteDefinition;
 
-const submitItem = action(async (formData: FormData) => {
+const submitItem = action(async (id: string, formData: FormData) => {
 	'use server';
-	const newItem = formData.get('item');
-	logger.debug({ newItem }, 'Submitting item');
+
+	logger.debug({ id }, 'in submitItem');
+	// Should validate, but this is a demo
+	const newItem = formData.get('item')?.toString() ?? '';
+	logger.debug({ id, newItem }, 'submitting new hunt item');
+	const existingHuntItems = (await huntItemsStorage.getItem(id)) ?? [];
+
+	logger.debug({ existingHuntItems }, 'existingHuntItems');
+	await huntItemsStorage.setItem(id, [...existingHuntItems, newItem]);
+	const updatedHuntItems = (await huntItemsStorage.getItem(id)) ?? [];
+
+	logger.debug({ updatedHuntItems }, 'updatedHuntItems');
+	return revalidate(getHuntItems.key);
 });
 
 export default function Hunt() {
@@ -42,17 +53,20 @@ export default function Hunt() {
 					when={items()?.length}
 					fallback={<p class="text-center">No items</p>}
 				>
-					<pre class="text-center">{items()}</pre>
+					<pre class="text-center">{JSON.stringify(items())}</pre>
 				</Show>
 			</div>
 			<div class="mx-auto my-2 flex justify-center">
-				<form action={submitItem} method="post">
+				<form action={submitItem.with(params.id)} method="post">
 					<input
 						class="block mb-2 border-2 border-gray-500"
 						type="text"
 						name="item"
 					/>
-					<button class="btn cursor-pointer bg-white mx-auto" type="submit">
+					<button
+						class="btn cursor-pointer bg-white mx-auto text-center"
+						type="submit"
+					>
 						Submit
 					</button>
 				</form>
