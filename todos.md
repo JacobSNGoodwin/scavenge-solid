@@ -56,9 +56,8 @@
 ## Server-sent events
 
 - [x] - create a test route with query param. Eventually we'll authorize connection
+  - we can authorize connection with already created event locals
 - [ ] - need to create some sort of channel or event bus tracking which URL to emit to
   - for now, it could be a record with key of the game/hunt mapped to list of event streams
 - useful docs
   - [creating list of clients](https://digitalocean.com/community/tutorials/nodejs-server-sent-events-build-realtime-app#step-1-building-the-sse-express-backend)
-  - [h3 createEventStream](https://h3.unjs.io/utils/advanced#createeventstreamevent-opts) or [sendStream](https://h3.unjs.io/examples/stream-response#send-a-stream) which is available with vinxi
-    - it looks like vinxi 3.5.0 supports `h3@1.11` which added `createEventStream`, but this isn't quite working with solidjs yet

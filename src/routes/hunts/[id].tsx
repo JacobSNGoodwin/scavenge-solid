@@ -15,6 +15,7 @@ const getHuntItems = cache(async (id: string) => {
 	logger.info(`Fetching hunt items for id: ${id}`);
 	const items = await huntItemsStorage.getItem(id);
 	logger.debug({ items }, 'retrieved items');
+
 	return items;
 }, 'hunt-items');
 
@@ -48,14 +49,6 @@ export default function Hunt() {
 	return (
 		<>
 			<h1 class="text-center text-3xl">Hunt: {params.id}</h1>
-			<div class="mx-auto my-2">
-				<Show
-					when={items()?.length}
-					fallback={<p class="text-center">No items</p>}
-				>
-					<pre class="text-center">{JSON.stringify(items())}</pre>
-				</Show>
-			</div>
 			<div class="mx-auto my-2 flex justify-center">
 				<form action={submitItem.with(params.id)} method="post">
 					<input
@@ -64,12 +57,20 @@ export default function Hunt() {
 						name="item"
 					/>
 					<button
-						class="btn cursor-pointer bg-white mx-auto text-center"
+						class="btn block cursor-pointer bg-white mx-auto text-center"
 						type="submit"
 					>
 						Submit
 					</button>
 				</form>
+			</div>
+			<div class="mx-auto my-8">
+				<Show
+					when={items()?.length}
+					fallback={<p class="text-center">No items</p>}
+				>
+					<pre class="text-center">{JSON.stringify(items())}</pre>
+				</Show>
 			</div>
 		</>
 	);
