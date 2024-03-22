@@ -14,10 +14,10 @@ import logger from '~/logger';
 
 export const getAuthUrl = cache(async (provider: string) => {
 	'use server';
-	const event = getRequestEvent();
+	const requestEvent = getRequestEvent();
 
 	// This is to satisfy typescript
-	if (!event) {
+	if (!requestEvent) {
 		throw new Error('No event found');
 	}
 
@@ -37,6 +37,7 @@ export const getAuthUrl = cache(async (provider: string) => {
 	// 	codeVerifier,
 	// });
 
+	const event = requestEvent.nativeEvent;
 	// store state verifier as cookie
 	setCookie(event, 'state', state, {
 		secure: import.meta.env.PROD,
@@ -72,19 +73,20 @@ export const getAuthUrl = cache(async (provider: string) => {
 
 export const verifyAuth = cache(async (provider: string) => {
 	'use server';
-	const event = getRequestEvent();
+	const requestEvent = getRequestEvent();
 
-	if (!event) {
+	if (!requestEvent) {
 		throw new Error('No event found');
 	}
 
+	const event = requestEvent.nativeEvent;
 	const verifier = verifiers[provider];
 
 	if (!verifier) {
 		throw new Error('No verifier found');
 	}
 
-	const url = new URL(event.request.url);
+	const url = new URL(requestEvent.request.url);
 
 	const verifierParams = {
 		code: url.searchParams?.get('code') ?? '',
@@ -151,7 +153,7 @@ export const deleteUserSession = action(async () => {
 			sessionCookie,
 			sessionCookie.serialize(),
 		);
-		appendHeader(event, 'Set-Cookie', sessionCookie.serialize());
+		appendHeader(event.nativeEvent, 'Set-Cookie', sessionCookie.serialize());
 		await lucia.invalidateSession(sessionId);
 	}
 
