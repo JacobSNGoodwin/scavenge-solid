@@ -2,6 +2,8 @@ import { useParams } from '@solidjs/router';
 import { createSignal, onCleanup, onMount } from 'solid-js';
 import logger from '~/logger';
 
+// TODO - maybe try with an action which returns the URL which maybe would help with types
+
 export default function TestSSE() {
 	const params = useParams();
 	let eventSource: EventSource | null = null;
