@@ -5,8 +5,9 @@ import type { Config } from 'drizzle-kit';
 export default {
 	schema: './src/database/schema.ts',
 	out: './drizzle/migrations',
-	driver: 'pg',
+	driver: 'turso',
 	dbCredentials: {
-		connectionString: process.env?.POSTGRES_CONNECTION_STRING ?? '',
+		url: process.env.TURSO_CONNECTION_URL ?? '',
+		authToken: process.env.TURSO_AUTH_TOKEN ?? '',
 	},
 } satisfies Config;

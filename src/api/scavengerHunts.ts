@@ -81,11 +81,15 @@ export const createNewScavengerHunt = action(
 			'creating new scavenger hunt',
 		);
 
+		const date = new Date();
+
 		const createdHunt = await createScavengerHunt({
 			id,
 			title,
 			description,
 			created_by: userId,
+			created_at: date,
+			updated_at: date,
 		});
 
 		throw redirect(`/manage/${createdHunt.id}`);

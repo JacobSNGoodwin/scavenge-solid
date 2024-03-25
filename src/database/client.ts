@@ -1,12 +1,12 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import pg from 'pg';
+import { drizzle } from 'drizzle-orm/libsql';
+import { createClient } from '@libsql/client';
 
-const { Pool } = pg;
-
-export const pool = new Pool({
-	connectionString: process.env?.POSTGRES_CONNECTION_STRING,
+// TURSO AUTH TOKEN is required for non-local development
+export const client = createClient({
+	url: process.env.TURSO_CONNECTION_URL ?? '',
+	authToken: process.env.TURSO_AUTH_TOKEN ?? '',
 });
 
-const db = drizzle(pool);
+const db = drizzle(client);
 
 export default db;

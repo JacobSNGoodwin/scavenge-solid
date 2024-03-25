@@ -23,7 +23,7 @@ const ProviderLogin = (props: RouteSectionProps) => {
 				</div>
 			}
 		>
-			<div class="invisible">{url()}</div>
+			<div class="invisible">{url()?.url}</div>
 		</Suspense>
 	);
 };

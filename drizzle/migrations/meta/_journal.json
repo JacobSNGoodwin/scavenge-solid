@@ -1,33 +1,26 @@
 {
   "version": "5",
-  "dialect": "pg",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1707175063378,
-      "tag": "0000_far_bastion",
+      "when": 1711403444868,
+      "tag": "0000_chilly_ulik",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "5",
-      "when": 1707254242679,
-      "tag": "0001_flashy_chimera",
+      "when": 1711403836796,
+      "tag": "0001_harsh_captain_britain",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "5",
-      "when": 1707962959523,
-      "tag": "0002_empty_black_queen",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1709329764163,
-      "tag": "0003_parched_the_hood",
+      "when": 1711403997749,
+      "tag": "0002_overrated_speed",
       "breakpoints": true
     }
   ]

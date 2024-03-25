@@ -1,18 +1,18 @@
-import { pgTable, index, text, timestamp, json } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import { sqliteTable, index, text, integer } from 'drizzle-orm/sqlite-core';
 
-export const user = pgTable(
+export const user = sqliteTable(
 	'user',
 	{
 		id: text('id').primaryKey(),
 		email: text('email').unique().notNull(),
 		name: text('name').notNull(),
 		imageUrl: text('image_url'),
-		connections: json('connections')
+		connections: text('connections', { mode: 'json' })
 			.$type<{
 				google?: string;
 				facebook?: string;
 			}>()
-			.default({})
 			.notNull(),
 	},
 	(table) => {
@@ -22,15 +22,12 @@ export const user = pgTable(
 	},
 );
 
-export const session = pgTable('session', {
-	id: text('id').primaryKey(),
+export const session = sqliteTable('session', {
+	id: text('id').notNull().primaryKey(),
 	userId: text('user_id')
 		.notNull()
 		.references(() => user.id),
-	expiresAt: timestamp('expires_at', {
-		withTimezone: true,
-		mode: 'date',
-	}).notNull(),
+	expiresAt: integer('expires_at').notNull(),
 });
 
 export type User = typeof user.$inferSelect;
@@ -42,15 +39,17 @@ export type NewSession = typeof session.$inferInsert;
 /*
  * Application tables
  */
-export const scavengerHunts = pgTable('scavenger_hunts', {
+export const scavengerHunts = sqliteTable('scavenger_hunts', {
 	id: text('id').primaryKey(),
 	title: text('title').notNull(),
 	created_by: text('created_by')
 		.references(() => user.id)
 		.notNull(),
 	description: text('description'),
-	created_at: timestamp('created_at', { mode: 'date' }).defaultNow().notNull(),
-	updated_at: timestamp('updated_at', { mode: 'date' }).defaultNow().notNull(),
+	created_at: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
+	updated_at: integer('updated_at', { mode: 'timestamp_ms' })
+		.default(sql`(unixepoch('now', 'subsec') * 1000)`)
+		.notNull(),
 });
 
 export type ScavengerHunt = typeof scavengerHunts.$inferSelect;

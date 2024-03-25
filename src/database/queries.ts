@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from '@solidjs/router';
 import { asc, eq } from 'drizzle-orm';
 import logger from '~/logger';
 import db from './client';

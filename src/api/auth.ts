@@ -12,6 +12,8 @@ import {
 import { requireUserOrRedirect } from './user';
 import logger from '~/logger';
 
+const log = logger.child({ namespace: 'auth' });
+
 export const getAuthUrl = cache(async (provider: string) => {
 	'use server';
 	const requestEvent = getRequestEvent();
@@ -56,7 +58,7 @@ export const getAuthUrl = cache(async (provider: string) => {
 		});
 	}
 
-	console.debug('redirecting to', {
+	log.debug('redirecting to', {
 		href: url.href,
 	});
 
@@ -135,7 +137,7 @@ export const verifyAuth = cache(async (provider: string) => {
 
 	appendHeader(event, 'Set-Cookie', cookie);
 
-	throw redirect('/');
+	throw redirect('/manage');
 }, 'verify-auth');
 
 export const deleteUserSession = action(async () => {

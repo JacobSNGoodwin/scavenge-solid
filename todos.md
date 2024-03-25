@@ -52,12 +52,15 @@
 - [x] - server-side validation
 - [x] - create validator function to return normalized error strings per field which can be run on client and server
 - [x] - do we handle in same action? Should we client-side validate?
+- [ ] - update form 
+
 
 ## Server-sent events
 
 - [x] - create a test route with query param. Eventually we'll authorize connection
   - we can authorize connection with already created event locals
-- [ ] - need to create some sort of channel or event bus tracking which URL to emit to
+- [x] - will probably poll db every minute or so for updates
+- [x] - need to create some sort of channel or event bus tracking which URL to emit to
   - for now, it could be a record with key of the game/hunt mapped to list of event streams
 - useful docs
   - [creating list of clients](https://digitalocean.com/community/tutorials/nodejs-server-sent-events-build-realtime-app#step-1-building-the-sse-express-backend)
