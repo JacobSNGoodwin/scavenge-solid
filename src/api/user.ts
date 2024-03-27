@@ -14,8 +14,6 @@ export const requireUserOrRedirect = cache(
 			throw redirect(redirectPath);
 		}
 
-		// logger.debug({ user: event.locals.user }, 'found user');
-		// await new Promise((resolve) => setTimeout(resolve, 300));
 		return event.locals.user;
 	},
 	'requireUser',
