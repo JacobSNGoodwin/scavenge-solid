@@ -1,4 +1,4 @@
-import { action, cache, redirect } from '@solidjs/router';
+import { action, cache, redirect, revalidate } from '@solidjs/router';
 import { nanoid } from 'nanoid';
 import { getRequestEvent } from 'solid-js/web';
 import { z } from 'zod';
@@ -7,6 +7,7 @@ import {
 	createScavengerHunt,
 	getScavengerHuntById,
 	getScavengerHuntsByUserId,
+	updateScavengerHunt,
 } from '../database/queries';
 import { scavengerHuntSchema } from '~/validators';
 
@@ -93,5 +94,46 @@ export const createNewScavengerHunt = action(
 		});
 
 		throw redirect(`/manage/${createdHunt.id}`);
+	},
+);
+
+export const updateExistingScavengerHunt = action(
+	async (id: string, fields: z.infer<typeof scavengerHuntSchema>) => {
+		'use server';
+
+		const request = getRequestEvent();
+		const userId = request?.locals.user?.id;
+
+		if (!userId) {
+			throw redirect('/login');
+		}
+
+		const result = scavengerHuntSchema.safeParse(fields);
+
+		if (!result.success) {
+			logger.warn({ error: result.error }, 'invalid scavenger hunt fields');
+			return result.error.formErrors.fieldErrors;
+		}
+
+		const { title, description } = result.data;
+
+		logger.info(
+			{
+				id,
+				title,
+				description,
+			},
+			'updating scavenger hunt',
+		);
+
+		const date = new Date();
+
+		const { id: updatedId } = await updateScavengerHunt(id, {
+			title,
+			description,
+			updated_at: date,
+		});
+
+		return revalidate(getScavengerHuntDetails.keyFor(updatedId));
 	},
 );

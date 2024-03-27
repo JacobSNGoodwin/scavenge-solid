@@ -4,7 +4,7 @@ import { asc, eq } from 'drizzle-orm';
 import logger from '~/logger';
 import db from './client';
 import { NewScavengerHunt, scavengerHunts, user } from './schema';
-import type { NewUser, User } from './schema';
+import type { NewUser, ScavengerHunt, User } from './schema';
 
 /*
  * User
@@ -84,6 +84,22 @@ export const createScavengerHunt = async (hunt: NewScavengerHunt) => {
 		.values(hunt)
 		.returning({ id: scavengerHunts.id });
 
-	await new Promise((resolve) => setTimeout(resolve, 2000));
+	return newHunts[0];
+};
+
+type UpdateScavengerHunt = Pick<
+	ScavengerHunt,
+	'title' | 'description' | 'updated_at'
+>;
+export const updateScavengerHunt = async (
+	id: string,
+	hunt: UpdateScavengerHunt,
+) => {
+	const newHunts = await db
+		.update(scavengerHunts)
+		.set(hunt)
+		.where(eq(scavengerHunts.id, id))
+		.returning({ id: scavengerHunts.id });
+
 	return newHunts[0];
 };

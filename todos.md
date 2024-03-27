@@ -52,8 +52,13 @@
 - [x] - server-side validation
 - [x] - create validator function to return normalized error strings per field which can be run on client and server
 - [x] - do we handle in same action? Should we client-side validate?
-- [ ] - update form 
+- [ ] - form to update hunts
+  - [ ] - and button to go from display to update of title and description
 
+## New Hunt Items
+- [ ] - add table
+- [ ] - Zod validation schema
+- [ ] - add UI in Hunt page
 
 ## Server-sent events
 

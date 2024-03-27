@@ -11,7 +11,7 @@ type ScavengerHuntFormProps = {
 	initialForm?: ScavengerHuntFormFields;
 	initialErrors?: ScavengerHuntFormErrors;
 	onSubmit: (form: ScavengerHuntFormFields) => void;
-	disabled: boolean;
+	disabled?: boolean;
 };
 
 export default function ScavengerHuntForm(props: ScavengerHuntFormProps) {
@@ -42,7 +42,7 @@ export default function ScavengerHuntForm(props: ScavengerHuntFormProps) {
 
 	return (
 		<>
-			<div class="max-w-96 mx-auto my-4 flex flex-col">
+			<div class="max-w-96 mx-auto my-2 flex flex-col">
 				<label for="title">Title</label>
 				<input
 					ref={titleRef}
@@ -60,7 +60,7 @@ export default function ScavengerHuntForm(props: ScavengerHuntFormProps) {
 					</Show>
 				</div>
 			</div>
-			<div class="max-w-96 mx-auto my-4 flex flex-col">
+			<div class="max-w-96 mx-auto my-2 flex flex-col">
 				<label for="title">Description</label>
 				<textarea
 					ref={descriptionRef}
