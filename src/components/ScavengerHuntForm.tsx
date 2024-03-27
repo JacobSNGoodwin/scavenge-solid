@@ -11,6 +11,7 @@ type ScavengerHuntFormProps = {
 	initialForm?: ScavengerHuntFormFields;
 	initialErrors?: ScavengerHuntFormErrors;
 	onSubmit: (form: ScavengerHuntFormFields) => void;
+	onCancel?: () => void;
 	disabled?: boolean;
 };
 
@@ -72,16 +73,36 @@ export default function ScavengerHuntForm(props: ScavengerHuntFormProps) {
 					{props?.initialForm?.description ?? ''}
 				</textarea>
 			</div>
-			<button
-				type="submit"
-				onClick={validateAndSubmit}
-				class="btn bg-violet-500 text-white my-4 block mx-auto"
-				disabled={props.disabled}
-			>
-				<Show when={props.initialForm} fallback="Submit">
-					Update
+			<div class="flex justify-center my-4 mx-auto gap-x-8">
+				<Show when={props.initialForm}>
+					<button
+						type="submit"
+						onClick={props.onCancel}
+						class="btn bg-stone-500 text-white block"
+						disabled={props.disabled}
+					>
+						Cancel
+					</button>
+					<button
+						type="submit"
+						onClick={validateAndSubmit}
+						class="btn bg-violet-500 text-white block"
+						disabled={props.disabled}
+					>
+						Update
+					</button>
 				</Show>
-			</button>
+				<Show when={!props.initialForm}>
+					<button
+						type="submit"
+						onClick={validateAndSubmit}
+						class="btn bg-violet-500 text-white block"
+						disabled={props.disabled}
+					>
+						Create
+					</button>
+				</Show>
+			</div>
 		</>
 	);
 }

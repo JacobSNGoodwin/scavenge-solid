@@ -28,7 +28,15 @@ export default function Manage() {
 	const submitUpdate = useAction(updateExistingScavengerHunt);
 	const updateSubmission = useSubmission(updateExistingScavengerHunt);
 
-	const [isEditing, setIseEditing] = createSignal(true);
+	const handleSubmitUpdate = async (form: {
+		title: string;
+		description: string;
+	}) => {
+		await submitUpdate(params.id, form);
+		setIseEditing(false);
+	};
+
+	const [isEditing, setIseEditing] = createSignal(false);
 
 	return (
 		<>
@@ -57,8 +65,9 @@ export default function Manage() {
 								description: scavengerHuntDetails()?.description ?? '',
 							}}
 							onSubmit={(form) => {
-								submitUpdate(params.id, form);
+								handleSubmitUpdate(form);
 							}}
+							onCancel={() => setIseEditing(false)}
 							disabled={updateSubmission.pending}
 						/>
 					</Show>
@@ -69,6 +78,14 @@ export default function Manage() {
 						<h2 class="text-xl text-center mb-2">
 							{scavengerHuntDetails()?.description}
 						</h2>
+						<button
+							type="button"
+							class="btn bg-violet-500 text-white my-4 block mx-auto"
+							onClick={() => setIseEditing(true)}
+						>
+							<span class="i-tabler:pencil inline-block align-middle mr-2" />
+							<span class="align-middle">Edit</span>
+						</button>
 					</Show>
 					<Show when={updateSubmission.pending}>
 						<div class="text-2xl flex flex-col justify-center items-center">
