@@ -9,7 +9,7 @@ export default function NewScavengerHunt() {
 	const newSubmission = useSubmission(createNewScavengerHunt);
 
 	return (
-		<div class="max-w-screen-md mx-auto my-4 mt-6">
+		<div class="max-w-screen-md mx-auto my-4 mt-6 px-2">
 			<Title>New Hunt</Title>
 			<a href="/manage">Go Back</a>
 			<h2 class="text-xl text-center">New Scavenger Hunt</h2>

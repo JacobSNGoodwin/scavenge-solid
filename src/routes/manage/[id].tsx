@@ -13,6 +13,7 @@ import {
 } from '~/api/scavengerHunts';
 import ScavengerHuntForm from '~/components/ScavengerHuntForm';
 import NewHuntItem from '~/components/NewHuntItem';
+import logger from '~/logger';
 
 export const route = {
 	load: async ({ params }) => {
@@ -34,15 +35,16 @@ export default function Manage() {
 		description: string;
 	}) => {
 		await submitUpdate(params.id, form);
-		setIseEditing(false);
+		setIsEditing(false);
 	};
 
-	const [isEditing, setIseEditing] = createSignal(false);
+	const [isEditing, setIsEditing] = createSignal(false);
+	const [isAddingNewItem, setIsAddingNewItem] = createSignal(false);
 
 	return (
 		<>
 			<Title>Manage Scavenger Hunt</Title>
-			<main class="max-w-screen-md mx-auto my-4">
+			<main class="max-w-screen-md mx-auto my-4 px-2">
 				<Suspense
 					fallback={
 						<div class="text-6xl flex flex-col justify-center items-center">
@@ -68,7 +70,7 @@ export default function Manage() {
 							onSubmit={(form) => {
 								handleSubmitUpdate(form);
 							}}
-							onCancel={() => setIseEditing(false)}
+							onCancel={() => setIsEditing(false)}
 							disabled={updateSubmission.pending}
 						/>
 					</Show>
@@ -81,8 +83,8 @@ export default function Manage() {
 						</h2>
 						<button
 							type="button"
-							class="btn bg-violet-500 text-white my-4 block mx-auto"
-							onClick={() => setIseEditing(true)}
+							class="btn bg-violet-500 text-white text-md my-4 block mx-auto"
+							onClick={() => setIsEditing(true)}
 						>
 							<span class="i-tabler:pencil inline-block align-middle mr-2" />
 							<span class="align-middle">Edit Title</span>
@@ -94,10 +96,27 @@ export default function Manage() {
 						</div>
 					</Show>
 
-					<h3 class="text-2xl text-stone-800 text-center">
+					<h3 class="my-4 text-2xl text-stone-800 text-center">
 						Scavenger Hunt Items
 					</h3>
-					<NewHuntItem />
+					<Show
+						when={isAddingNewItem()}
+						fallback={
+							<button
+								type="button"
+								class="block my-4 mx-auto text-center i-tabler:square-rounded-plus-filled text-5xl cursor-pointer bg-violet-500"
+								onClick={() => {
+									setIsEditing(false);
+									setIsAddingNewItem(true);
+								}}
+							/>
+						}
+					>
+						<NewHuntItem
+							onSubmit={logger.debug}
+							onCancel={() => setIsAddingNewItem(false)}
+						/>
+					</Show>
 				</Suspense>
 			</main>
 		</>
