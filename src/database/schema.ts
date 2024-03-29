@@ -54,3 +54,19 @@ export const scavengerHunts = sqliteTable('scavenger_hunts', {
 
 export type ScavengerHunt = typeof scavengerHunts.$inferSelect;
 export type NewScavengerHunt = typeof scavengerHunts.$inferInsert;
+
+export const scavengerHuntItems = sqliteTable('scavenger_hunt_items', {
+	id: text('id').primaryKey(),
+	hunt_id: text('hunt_id')
+		.references(() => scavengerHunts.id)
+		.notNull(),
+	title: text('title').notNull(),
+	value: integer('value', { mode: 'number' }).notNull(),
+	created_at: integer('created_at', { mode: 'timestamp_ms' }).notNull(),
+	updated_at: integer('updated_at', { mode: 'timestamp_ms' })
+		.default(sql`(unixepoch('now', 'subsec') * 1000)`)
+		.notNull(),
+});
+
+export type ScavengerHuntItem = typeof scavengerHuntItems.$inferSelect;
+export type NewScavengerHuntItem = typeof scavengerHuntItems.$inferInsert;

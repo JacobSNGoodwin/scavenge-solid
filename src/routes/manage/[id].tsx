@@ -12,6 +12,7 @@ import {
 	updateExistingScavengerHunt,
 } from '~/api/scavengerHunts';
 import ScavengerHuntForm from '~/components/ScavengerHuntForm';
+import NewHuntItem from '~/components/NewHuntItem';
 
 export const route = {
 	load: async ({ params }) => {
@@ -84,7 +85,7 @@ export default function Manage() {
 							onClick={() => setIseEditing(true)}
 						>
 							<span class="i-tabler:pencil inline-block align-middle mr-2" />
-							<span class="align-middle">Edit</span>
+							<span class="align-middle">Edit Title</span>
 						</button>
 					</Show>
 					<Show when={updateSubmission.pending}>
@@ -92,6 +93,11 @@ export default function Manage() {
 							<div class="i-svg-spinners:3-dots-move bg-gray-500" />
 						</div>
 					</Show>
+
+					<h3 class="text-2xl text-stone-800 text-center">
+						Scavenger Hunt Items
+					</h3>
+					<NewHuntItem />
 				</Suspense>
 			</main>
 		</>
