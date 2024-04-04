@@ -1,19 +1,22 @@
+import { Title } from '@solidjs/meta';
+import type { RouteDefinition } from '@solidjs/router';
 import {
-	RouteDefinition,
-	createAsync,
+	createAsyncStore,
 	useAction,
 	useParams,
 	useSubmission,
 } from '@solidjs/router';
-import { Title } from '@solidjs/meta';
 import { Show, Suspense, createSignal } from 'solid-js';
 import {
+	createScavengerHuntItem,
 	getScavengerHuntDetails,
+	getScavengerHuntItems,
 	updateExistingScavengerHunt,
 } from '~/api/scavengerHunts';
-import ScavengerHuntForm from '~/components/ScavengerHuntForm';
 import NewHuntItem from '~/components/NewHuntItem';
+import ScavengerHuntForm from '~/components/ScavengerHuntForm';
 import logger from '~/logger';
+import type { ScavengerHuntItemFormFields } from '~/validators';
 
 export const route = {
 	load: async ({ params }) => {
@@ -23,12 +26,28 @@ export const route = {
 
 export default function Manage() {
 	const params = useParams();
-	const scavengerHuntDetails = createAsync(() =>
-		getScavengerHuntDetails(params.id),
-	);
+	const scavengerHuntDetails = createAsyncStore(async () => {
+		// we await the cached result of getScaengerHuntDetails because
+		// this validates the hunt belongs to the user. After this fetch
+		// (or on updates of title/details), we can update items without revalidating
+		// this cached functino
+		const { id, title, description } = await getScavengerHuntDetails(params.id);
+		const items = await getScavengerHuntItems(id);
+		return {
+			title,
+			description,
+			items,
+		};
+	});
+
+	const [isEditing, setIsEditing] = createSignal(false);
+	const [isAddingNewItem, setIsAddingNewItem] = createSignal(false);
 
 	const submitUpdate = useAction(updateExistingScavengerHunt);
 	const updateSubmission = useSubmission(updateExistingScavengerHunt);
+
+	const submitItem = useAction(createScavengerHuntItem);
+	// const itemSubmission = useSubmission(addScavengerHuntItem);
 
 	const handleSubmitUpdate = async (form: {
 		title: string;
@@ -38,8 +57,12 @@ export default function Manage() {
 		setIsEditing(false);
 	};
 
-	const [isEditing, setIsEditing] = createSignal(false);
-	const [isAddingNewItem, setIsAddingNewItem] = createSignal(false);
+	const handleAddItem = async (form: ScavengerHuntItemFormFields) => {
+		setIsAddingNewItem(false);
+		submitItem(params.id, form);
+	};
+
+	const handleDeleteItem = async (itemId: string) => {};
 
 	return (
 		<>
@@ -52,7 +75,7 @@ export default function Manage() {
 						</div>
 					}
 				>
-					<div class="flex justify-center my-4">
+					<div class="my-4 w-28">
 						<a
 							href="/manage"
 							class="flex items-center btn mx-auto text-center bg-zinc-400 text-white"
@@ -113,10 +136,11 @@ export default function Manage() {
 						}
 					>
 						<NewHuntItem
-							onSubmit={logger.debug}
+							onSubmit={(form) => handleAddItem(form)}
 							onCancel={() => setIsAddingNewItem(false)}
 						/>
 					</Show>
+					<pre>{JSON.stringify(scavengerHuntDetails(), null, 2)}</pre>
 				</Suspense>
 			</main>
 		</>

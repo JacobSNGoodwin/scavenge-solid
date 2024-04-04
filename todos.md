@@ -56,9 +56,22 @@
   - [x] - and button to go from display to update of title and description
 
 ## Scavenger Hunt Items
-- [ ] - add table
-- [ ] - Zod validation schema
-- [ ] - add UI in Hunt page
+- [x] - add table
+- [x] - Zod validation schema
+- [x] - add UI in Hunt page
+- [x] - fetch items on Hunt page
+  - [x] - do we separate details and items query?
+  - [x] - if so, how do we handle being sure items belong to particular user?
+- [ ] - items list component which has deleteItem prop
+- [ ] - optimistic update of items
+- [ ] - errors to NewHuntItem from useSubmission result
+
+## Set Up Domain to use over network
+
+- [ ] - use caddy as quick dev reverse proxy
+- [ ] - set up /etc/hosts
+- [ ] - how to access from phone
+
 
 ## Server-sent events
 

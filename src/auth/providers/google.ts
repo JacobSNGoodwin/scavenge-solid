@@ -1,5 +1,6 @@
 import { Google } from 'arctic';
 import { generateRandom } from './generateRandom';
+import logger from '~/logger';
 
 const google = new Google(
 	process.env.GOOGLE_CLIENT_ID ?? '',

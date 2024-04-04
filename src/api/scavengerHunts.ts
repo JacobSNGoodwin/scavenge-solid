@@ -1,15 +1,21 @@
 import { action, cache, redirect, revalidate } from '@solidjs/router';
 import { nanoid } from 'nanoid';
 import { getRequestEvent } from 'solid-js/web';
-import { z } from 'zod';
+import type { z } from 'zod';
 import logger from '~/logger';
 import {
+	scavengerHuntSchema,
+	type ScavengerHuntItemFormFields,
+} from '~/validators';
+import {
+	addItemToScavengerHunt,
 	createScavengerHunt,
+	getItemsByScavengerHuntId,
 	getScavengerHuntById,
 	getScavengerHuntsByUserId,
 	updateScavengerHunt,
 } from '../database/queries';
-import { scavengerHuntSchema } from '~/validators';
+import type { NewScavengerHuntItem } from '~/database/schema';
 
 const log = logger.child({ module: 'api/scavengerHunts' });
 
@@ -39,10 +45,10 @@ export const getScavengerHuntDetails = cache(async (huntId: string) => {
 
 	const scavengerHunt = await getScavengerHuntById(huntId);
 
-	if (scavengerHunt.created_by !== userId) {
+	if (scavengerHunt.createdBy !== userId) {
 		log.warn(
 			{ scavengerHunt, userId },
-			'attempted to retrieve scavenger hunt not owned by user',
+			'Scavenger Hunt does not belong to user',
 		);
 		throw new Error('Not found');
 	}
@@ -64,7 +70,7 @@ export const createNewScavengerHunt = action(
 		const result = scavengerHuntSchema.safeParse(fields);
 
 		if (!result.success) {
-			logger.warn({ error: result.error }, 'invalid scavenger hunt fields');
+			log.warn({ error: result.error }, 'invalid scavenger hunt fields');
 			return result.error.formErrors.fieldErrors;
 		}
 
@@ -72,7 +78,7 @@ export const createNewScavengerHunt = action(
 
 		const id = nanoid();
 
-		logger.info(
+		log.info(
 			{
 				id,
 				title,
@@ -88,9 +94,9 @@ export const createNewScavengerHunt = action(
 			id,
 			title,
 			description,
-			created_by: userId,
-			created_at: date,
-			updated_at: date,
+			createdBy: userId,
+			createdAt: date,
+			updatedAt: date,
 		});
 
 		throw redirect(`/manage/${createdHunt.id}`);
@@ -111,13 +117,13 @@ export const updateExistingScavengerHunt = action(
 		const result = scavengerHuntSchema.safeParse(fields);
 
 		if (!result.success) {
-			logger.warn({ error: result.error }, 'invalid scavenger hunt fields');
+			log.warn({ error: result.error }, 'invalid scavenger hunt fields');
 			return result.error.formErrors.fieldErrors;
 		}
 
 		const { title, description } = result.data;
 
-		logger.info(
+		log.info(
 			{
 				id,
 				title,
@@ -131,9 +137,56 @@ export const updateExistingScavengerHunt = action(
 		const { id: updatedId } = await updateScavengerHunt(id, {
 			title,
 			description,
-			updated_at: date,
+			updatedAt: date,
 		});
 
 		return revalidate(getScavengerHuntDetails.keyFor(updatedId));
+	},
+);
+
+// hunt items
+export const getScavengerHuntItems = cache(async (huntId: string) => {
+	'use server';
+	const request = getRequestEvent();
+	const userId = request?.locals.user?.id;
+
+	if (!userId) {
+		throw redirect('/login');
+	}
+
+	return getItemsByScavengerHuntId(huntId);
+}, 'scavengerHuntItems');
+
+export const createScavengerHuntItem = action(
+	async (huntId: string, fields: ScavengerHuntItemFormFields) => {
+		'use server';
+		const request = getRequestEvent();
+		const userId = request?.locals.user?.id;
+
+		if (!userId) {
+			throw redirect('/login');
+		}
+
+		const date = new Date();
+
+		const newItem: NewScavengerHuntItem = {
+			id: nanoid(),
+			huntId,
+			title: fields.title,
+			value: fields.value,
+			createdAt: date,
+			updatedAt: date,
+		};
+
+		log.info(
+			{
+				newItem,
+			},
+			'creating new scavenger hunt item',
+		);
+
+		await addItemToScavengerHunt(newItem);
+
+		revalidate(getScavengerHuntItems.keyFor(huntId));
 	},
 );

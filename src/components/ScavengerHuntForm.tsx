@@ -35,10 +35,7 @@ export default function ScavengerHuntForm(props: ScavengerHuntFormProps) {
 			return;
 		}
 
-		props.onSubmit({
-			title: titleRef?.value ?? '',
-			description: descriptionRef?.value ?? '',
-		});
+		props.onSubmit(formState.data);
 	};
 
 	return (

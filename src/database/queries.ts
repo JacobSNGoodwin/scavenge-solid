@@ -3,8 +3,16 @@
 import { asc, eq } from 'drizzle-orm';
 import logger from '~/logger';
 import db from './client';
-import { NewScavengerHunt, scavengerHunts, user } from './schema';
-import type { NewUser, ScavengerHunt, User } from './schema';
+import { scavengerHuntItems, scavengerHunts, user } from './schema';
+import type {
+	NewScavengerHunt,
+	NewScavengerHuntItem,
+	NewUser,
+	ScavengerHunt,
+	User,
+} from './schema';
+
+const log = logger.child({ module: 'database/queries' });
 
 /*
  * User
@@ -62,7 +70,7 @@ export const getScavengerHuntsByUserId = async (userId: string) => {
 	const result = await db
 		.select()
 		.from(scavengerHunts)
-		.where(eq(scavengerHunts.created_by, userId))
+		.where(eq(scavengerHunts.createdBy, userId))
 		.orderBy(asc(scavengerHunts.title));
 	logger.debug({ userId, result }, 'fetched scavenger hunts for user');
 	return result;
@@ -89,7 +97,7 @@ export const createScavengerHunt = async (hunt: NewScavengerHunt) => {
 
 type UpdateScavengerHunt = Pick<
 	ScavengerHunt,
-	'title' | 'description' | 'updated_at'
+	'title' | 'description' | 'updatedAt'
 >;
 export const updateScavengerHunt = async (
 	id: string,
@@ -102,4 +110,21 @@ export const updateScavengerHunt = async (
 		.returning({ id: scavengerHunts.id });
 
 	return newHunts[0];
+};
+
+// Hunt items
+export const getItemsByScavengerHuntId = async (huntId: string) => {
+	const result = await db
+		.select()
+		.from(scavengerHuntItems)
+		.where(eq(scavengerHuntItems.huntId, huntId));
+
+	logger.debug({ result }, 'fetched scavenger hunt items');
+	return result;
+};
+
+export const addItemToScavengerHunt = async (item: NewScavengerHuntItem) => {
+	log.debug({ item }, 'inserting new ScavengerHuntItem');
+	const result = await db.insert(scavengerHuntItems).values(item);
+	log.debug({ result }, 'successffuly inserted to item');
 };
