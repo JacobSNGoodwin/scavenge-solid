@@ -13,7 +13,8 @@ import {
 	getScavengerHuntItems,
 	updateExistingScavengerHunt,
 } from '~/api/scavengerHunts';
-import NewHuntItem from '~/components/NewHuntItem';
+import HuntItemsList from '~/components/HuntItemsList';
+import HuntItem from '~/components/HuntItem';
 import ScavengerHuntForm from '~/components/ScavengerHuntForm';
 import logger from '~/logger';
 import type { ScavengerHuntItemFormFields } from '~/validators';
@@ -21,6 +22,7 @@ import type { ScavengerHuntItemFormFields } from '~/validators';
 export const route = {
 	load: async ({ params }) => {
 		getScavengerHuntDetails(params.id);
+		getScavengerHuntItems(params.id);
 	},
 } satisfies RouteDefinition;
 
@@ -119,28 +121,11 @@ export default function Manage() {
 						</div>
 					</Show>
 
-					<h3 class="my-4 text-2xl text-stone-800 text-center">
-						Scavenger Hunt Items
-					</h3>
-					<Show
-						when={isAddingNewItem()}
-						fallback={
-							<button
-								type="button"
-								class="block my-4 mx-auto text-center i-tabler:square-rounded-plus-filled text-5xl cursor-pointer bg-violet-500"
-								onClick={() => {
-									setIsEditing(false);
-									setIsAddingNewItem(true);
-								}}
-							/>
-						}
-					>
-						<NewHuntItem
-							onSubmit={(form) => handleAddItem(form)}
-							onCancel={() => setIsAddingNewItem(false)}
-						/>
-					</Show>
-					<pre>{JSON.stringify(scavengerHuntDetails(), null, 2)}</pre>
+					<HuntItemsList
+						items={scavengerHuntDetails()?.items ?? []}
+						onDeleteItem={handleDeleteItem}
+						onAddItem={handleAddItem}
+					/>
 				</Suspense>
 			</main>
 		</>

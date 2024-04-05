@@ -62,7 +62,7 @@
 - [x] - fetch items on Hunt page
   - [x] - do we separate details and items query?
   - [x] - if so, how do we handle being sure items belong to particular user?
-- [ ] - items list component which has deleteItem prop
+- [ ] - items list component which has deleteItem prop and handles ordering
 - [ ] - optimistic update of items
 - [ ] - errors to NewHuntItem from useSubmission result
 

@@ -2,8 +2,8 @@ import { Show, createSignal } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import logger from '~/logger';
 import {
-	ScavengerHuntItemFormErrors,
-	ScavengerHuntItemFormFields,
+	type ScavengerHuntItemFormErrors,
+	type ScavengerHuntItemFormFields,
 	scavengerHuntItemSchema,
 } from '~/validators';
 

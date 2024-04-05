@@ -1,6 +1,6 @@
 'use server';
 
-import { asc, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import logger from '~/logger';
 import db from './client';
 import { scavengerHuntItems, scavengerHunts, user } from './schema';
@@ -117,7 +117,8 @@ export const getItemsByScavengerHuntId = async (huntId: string) => {
 	const result = await db
 		.select()
 		.from(scavengerHuntItems)
-		.where(eq(scavengerHuntItems.huntId, huntId));
+		.where(eq(scavengerHuntItems.huntId, huntId))
+		.orderBy(asc(scavengerHuntItems.value), desc(scavengerHuntItems.createdAt));
 
 	logger.debug({ result }, 'fetched scavenger hunt items');
 	return result;
