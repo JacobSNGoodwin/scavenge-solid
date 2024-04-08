@@ -1,6 +1,8 @@
 import { Show, createSignal } from 'solid-js';
+import { createScavengerHuntItem } from '~/api/scavengerHunts';
 import type { ScavengerHuntItemFormFields } from '~/validators';
 import HuntItemComponent from './HuntItem';
+import { useAction } from '@solidjs/router';
 
 type HuntItem = {
 	id: string;
@@ -11,17 +13,19 @@ type HuntItem = {
 };
 
 type HuntItemsListProps = {
+	huntId: string;
 	items: HuntItem[];
 	onDeleteItem: (itemId: string) => void;
-	onAddItem: (item: ScavengerHuntItemFormFields) => void;
 };
 
 export default function HuntItemsList(props: HuntItemsListProps) {
 	const [isAddingNewItem, setIsAddingNewItem] = createSignal(false);
 
+	const submitItem = useAction(createScavengerHuntItem);
+
 	const handleAddNewItem = (item: ScavengerHuntItemFormFields) => {
 		setIsAddingNewItem(false);
-		props.onAddItem(item);
+		submitItem(props.huntId, item);
 	};
 
 	return (

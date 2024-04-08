@@ -63,6 +63,7 @@
   - [x] - do we separate details and items query?
   - [x] - if so, how do we handle being sure items belong to particular user?
 - [ ] - items list component which has deleteItem prop and handles ordering
+  - [x] - I think that we may just want a single fetch of all details since cached functions only seem to be able to work at a route level.
 - [ ] - optimistic update of items
 - [ ] - errors to NewHuntItem from useSubmission result
 

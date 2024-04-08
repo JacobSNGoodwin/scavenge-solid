@@ -2,20 +2,20 @@ import { action, cache, redirect, revalidate } from '@solidjs/router';
 import { nanoid } from 'nanoid';
 import { getRequestEvent } from 'solid-js/web';
 import type { z } from 'zod';
+import type { NewScavengerHuntItem } from '~/database/schema';
 import logger from '~/logger';
 import {
-	scavengerHuntSchema,
 	type ScavengerHuntItemFormFields,
+	scavengerHuntSchema,
 } from '~/validators';
 import {
 	addItemToScavengerHunt,
 	createScavengerHunt,
-	getItemsByScavengerHuntId,
-	getScavengerHuntById,
+	getScavengerHuntItemsById,
 	getScavengerHuntsByUserId,
 	updateScavengerHunt,
 } from '../database/queries';
-import type { NewScavengerHuntItem } from '~/database/schema';
+import { isNotNullish } from '~/utils';
 
 const log = logger.child({ module: 'api/scavengerHunts' });
 
@@ -43,17 +43,30 @@ export const getScavengerHuntDetails = cache(async (huntId: string) => {
 		throw redirect('/login');
 	}
 
-	const scavengerHunt = await getScavengerHuntById(huntId);
+	const scavengerHuntWithItems = await getScavengerHuntItemsById(
+		huntId,
+		userId,
+	);
 
-	if (scavengerHunt.createdBy !== userId) {
+	if (!scavengerHuntWithItems.length) {
 		log.warn(
-			{ scavengerHunt, userId },
+			{ scavengerHuntWithItems, userId },
 			'Scavenger Hunt does not belong to user',
 		);
 		throw new Error('Not found');
 	}
 
-	return scavengerHunt;
+	const details = scavengerHuntWithItems[0].scavenger_hunts;
+	const huntItems = scavengerHuntWithItems.map(
+		(item) => item.scavenger_hunt_items,
+	);
+
+	const items = huntItems.filter(isNotNullish);
+
+	return {
+		...details,
+		items,
+	};
 }, 'scavengerHunt');
 
 export const createNewScavengerHunt = action(
@@ -140,22 +153,9 @@ export const updateExistingScavengerHunt = action(
 			updatedAt: date,
 		});
 
-		return revalidate(getScavengerHuntDetails.keyFor(updatedId));
+		revalidate(getScavengerHuntDetails.keyFor(updatedId));
 	},
 );
-
-// hunt items
-export const getScavengerHuntItems = cache(async (huntId: string) => {
-	'use server';
-	const request = getRequestEvent();
-	const userId = request?.locals.user?.id;
-
-	if (!userId) {
-		throw redirect('/login');
-	}
-
-	return getItemsByScavengerHuntId(huntId);
-}, 'scavengerHuntItems');
 
 export const createScavengerHuntItem = action(
 	async (huntId: string, fields: ScavengerHuntItemFormFields) => {
@@ -187,6 +187,6 @@ export const createScavengerHuntItem = action(
 
 		await addItemToScavengerHunt(newItem);
 
-		revalidate(getScavengerHuntItems.keyFor(huntId));
+		revalidate(getScavengerHuntDetails.keyFor(huntId));
 	},
 );

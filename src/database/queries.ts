@@ -1,6 +1,6 @@
 'use server';
 
-import { asc, desc, eq } from 'drizzle-orm';
+import { asc, desc, eq, and } from 'drizzle-orm';
 import logger from '~/logger';
 import db from './client';
 import { scavengerHuntItems, scavengerHunts, user } from './schema';
@@ -21,7 +21,7 @@ const log = logger.child({ module: 'database/queries' });
 export const findUserByEmail = async (
 	email: string,
 ): Promise<User | undefined> => {
-	console.debug('finding user with email', { email });
+	log.debug({ email }, 'finding user with email');
 	const dbUsers = await db.select().from(user).where(eq(user.email, email));
 
 	return dbUsers[0];
@@ -72,18 +72,22 @@ export const getScavengerHuntsByUserId = async (userId: string) => {
 		.from(scavengerHunts)
 		.where(eq(scavengerHunts.createdBy, userId))
 		.orderBy(asc(scavengerHunts.title));
-	logger.debug({ userId, result }, 'fetched scavenger hunts for user');
+	log.debug({ userId, result }, 'fetched scavenger hunts for user');
 	return result;
 };
 
-export const getScavengerHuntById = async (id: string) => {
+export const getScavengerHuntItemsById = async (id: string, userId: string) => {
 	const result = await db
 		.select()
 		.from(scavengerHunts)
-		.where(eq(scavengerHunts.id, id));
+		.where(and(eq(scavengerHunts.id, id), eq(scavengerHunts.createdBy, userId)))
+		.leftJoin(
+			scavengerHuntItems,
+			eq(scavengerHunts.id, scavengerHuntItems.huntId),
+		);
 
-	logger.debug({ result }, 'fetched scavenger hunt details');
-	return result[0];
+	log.debug({ result }, 'getScavengerHuntItemsById query result');
+	return result;
 };
 
 export const createScavengerHunt = async (hunt: NewScavengerHunt) => {
@@ -110,18 +114,6 @@ export const updateScavengerHunt = async (
 		.returning({ id: scavengerHunts.id });
 
 	return newHunts[0];
-};
-
-// Hunt items
-export const getItemsByScavengerHuntId = async (huntId: string) => {
-	const result = await db
-		.select()
-		.from(scavengerHuntItems)
-		.where(eq(scavengerHuntItems.huntId, huntId))
-		.orderBy(asc(scavengerHuntItems.value), desc(scavengerHuntItems.createdAt));
-
-	logger.debug({ result }, 'fetched scavenger hunt items');
-	return result;
 };
 
 export const addItemToScavengerHunt = async (item: NewScavengerHuntItem) => {

@@ -8,48 +8,28 @@ import {
 } from '@solidjs/router';
 import { Show, Suspense, createSignal } from 'solid-js';
 import {
-	createScavengerHuntItem,
 	getScavengerHuntDetails,
-	getScavengerHuntItems,
 	updateExistingScavengerHunt,
 } from '~/api/scavengerHunts';
 import HuntItemsList from '~/components/HuntItemsList';
-import HuntItem from '~/components/HuntItem';
 import ScavengerHuntForm from '~/components/ScavengerHuntForm';
-import logger from '~/logger';
-import type { ScavengerHuntItemFormFields } from '~/validators';
 
 export const route = {
 	load: async ({ params }) => {
 		getScavengerHuntDetails(params.id);
-		getScavengerHuntItems(params.id);
 	},
 } satisfies RouteDefinition;
 
 export default function Manage() {
 	const params = useParams();
 	const scavengerHuntDetails = createAsyncStore(async () => {
-		// we await the cached result of getScaengerHuntDetails because
-		// this validates the hunt belongs to the user. After this fetch
-		// (or on updates of title/details), we can update items without revalidating
-		// this cached functino
-		const { id, title, description } = await getScavengerHuntDetails(params.id);
-		const items = await getScavengerHuntItems(id);
-		return {
-			title,
-			description,
-			items,
-		};
+		return getScavengerHuntDetails(params.id);
 	});
 
 	const [isEditing, setIsEditing] = createSignal(false);
-	const [isAddingNewItem, setIsAddingNewItem] = createSignal(false);
 
 	const submitUpdate = useAction(updateExistingScavengerHunt);
 	const updateSubmission = useSubmission(updateExistingScavengerHunt);
-
-	const submitItem = useAction(createScavengerHuntItem);
-	// const itemSubmission = useSubmission(addScavengerHuntItem);
 
 	const handleSubmitUpdate = async (form: {
 		title: string;
@@ -57,11 +37,6 @@ export default function Manage() {
 	}) => {
 		await submitUpdate(params.id, form);
 		setIsEditing(false);
-	};
-
-	const handleAddItem = async (form: ScavengerHuntItemFormFields) => {
-		setIsAddingNewItem(false);
-		submitItem(params.id, form);
 	};
 
 	const handleDeleteItem = async (itemId: string) => {};
@@ -122,9 +97,9 @@ export default function Manage() {
 					</Show>
 
 					<HuntItemsList
+						huntId={scavengerHuntDetails()?.id ?? ''}
 						items={scavengerHuntDetails()?.items ?? []}
 						onDeleteItem={handleDeleteItem}
-						onAddItem={handleAddItem}
 					/>
 				</Suspense>
 			</main>
