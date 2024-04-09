@@ -1,8 +1,8 @@
-import { Show, createSignal } from 'solid-js';
+import { useAction, useSubmission } from '@solidjs/router';
+import { For, Show, createSignal } from 'solid-js';
 import { createScavengerHuntItem } from '~/api/scavengerHunts';
 import type { ScavengerHuntItemFormFields } from '~/validators';
-import HuntItemComponent from './HuntItem';
-import { useAction } from '@solidjs/router';
+import HuntItemForm from './HuntItemForm';
 
 type HuntItem = {
 	id: string;
@@ -15,18 +15,49 @@ type HuntItem = {
 type HuntItemsListProps = {
 	huntId: string;
 	items: HuntItem[];
-	onDeleteItem: (itemId: string) => void;
 };
 
 export default function HuntItemsList(props: HuntItemsListProps) {
 	const [isAddingNewItem, setIsAddingNewItem] = createSignal(false);
 
-	const submitItem = useAction(createScavengerHuntItem);
+	const createNewItem = useAction(createScavengerHuntItem);
+	const newItemSubmission = useSubmission(createScavengerHuntItem);
 
 	const handleAddNewItem = (item: ScavengerHuntItemFormFields) => {
 		setIsAddingNewItem(false);
-		submitItem(props.huntId, item);
+		createNewItem(props.huntId, item);
 	};
+
+	const itemsByValueWithSubmission = () => {
+		// most browsers will support Object.groupBy as of 2024-03
+		const allItems: Array<Pick<HuntItem, 'title' | 'value' | 'id'>> = [
+			...props.items,
+		];
+
+		if (newItemSubmission.input) {
+			const fields = newItemSubmission.input[1];
+
+			allItems.push({ ...fields, id: '' });
+		}
+
+		// const [_huntId, fields] = newItemSubmission.input;
+		// console.debug('resorting', { fields });
+
+		const sortedItems = allItems.sort((a, b) => {
+			const titleA = a.title.toLowerCase();
+			const titleB = b.title.toLowerCase();
+
+			if (a.value - b.value !== 0) {
+				return a.value - b.value;
+			}
+
+			return titleA < titleB ? -1 : 1;
+		});
+
+		return sortedItems;
+	};
+
+	const handleDeleteItem = async (itemId: string) => {};
 
 	return (
 		<>
@@ -45,13 +76,19 @@ export default function HuntItemsList(props: HuntItemsListProps) {
 					/>
 				}
 			>
-				<HuntItemComponent
+				<HuntItemForm
 					onSubmit={handleAddNewItem}
 					onCancel={() => setIsAddingNewItem(false)}
 				/>
 			</Show>
 
-			<pre>{JSON.stringify(props.items, null, 2)}</pre>
+			<For each={itemsByValueWithSubmission()}>
+				{(item) => (
+					<div class="my-4 text-lg">
+						{item.title} - {item.value}
+					</div>
+				)}
+			</For>
 		</>
 	);
 }

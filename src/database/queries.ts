@@ -84,7 +84,8 @@ export const getScavengerHuntItemsById = async (id: string, userId: string) => {
 		.leftJoin(
 			scavengerHuntItems,
 			eq(scavengerHunts.id, scavengerHuntItems.huntId),
-		);
+		)
+		.orderBy(asc(scavengerHuntItems.value), asc(scavengerHuntItems.title));
 
 	log.debug({ result }, 'getScavengerHuntItemsById query result');
 	return result;

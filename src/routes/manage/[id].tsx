@@ -39,8 +39,6 @@ export default function Manage() {
 		setIsEditing(false);
 	};
 
-	const handleDeleteItem = async (itemId: string) => {};
-
 	return (
 		<>
 			<Title>Manage Scavenger Hunt</Title>
@@ -99,7 +97,6 @@ export default function Manage() {
 					<HuntItemsList
 						huntId={scavengerHuntDetails()?.id ?? ''}
 						items={scavengerHuntDetails()?.items ?? []}
-						onDeleteItem={handleDeleteItem}
 					/>
 				</Suspense>
 			</main>
