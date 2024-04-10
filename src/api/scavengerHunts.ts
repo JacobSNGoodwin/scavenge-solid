@@ -11,6 +11,8 @@ import {
 import {
 	addItemToScavengerHunt,
 	createScavengerHunt,
+	deleteItemFromScavengerHunt,
+	getScavengerHuntById,
 	getScavengerHuntItemsById,
 	getScavengerHuntsByUserId,
 	updateScavengerHunt,
@@ -185,8 +187,42 @@ export const createScavengerHuntItem = action(
 			'creating new scavenger hunt item',
 		);
 
-		await addItemToScavengerHunt(newItem);
+		const added = await addItemToScavengerHunt(newItem);
 
+		log.info({ added }, 'Succesfully addded new scavenger hunt item');
+
+		revalidate(getScavengerHuntDetails.keyFor(huntId));
+	},
+);
+
+export const deleteScavengerHuntItem = action(
+	async (huntId: string, itemId: string) => {
+		'use server';
+		const request = getRequestEvent();
+		const userId = request?.locals.user?.id;
+
+		if (!userId) {
+			throw redirect('/login');
+		}
+
+		const scavengerHunt = await getScavengerHuntById(huntId);
+
+		if (scavengerHunt?.createdBy !== userId) {
+			// TODO - handle this
+			throw new Error('Not authorized');
+		}
+
+		log.info(
+			{
+				huntId,
+				itemId,
+			},
+			'deleting existing scavenger hunt item',
+		);
+
+		const deleted = await deleteItemFromScavengerHunt(itemId);
+
+		log.debug({ deleted }, 'deleted item from scavenger hunt');
 		revalidate(getScavengerHuntDetails.keyFor(huntId));
 	},
 );

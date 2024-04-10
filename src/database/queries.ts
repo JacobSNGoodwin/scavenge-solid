@@ -1,6 +1,6 @@
 'use server';
 
-import { asc, desc, eq, and } from 'drizzle-orm';
+import { asc, eq, and } from 'drizzle-orm';
 import logger from '~/logger';
 import db from './client';
 import { scavengerHuntItems, scavengerHunts, user } from './schema';
@@ -76,6 +76,14 @@ export const getScavengerHuntsByUserId = async (userId: string) => {
 	return result;
 };
 
+export const getScavengerHuntById = async (id: string) => {
+	return db
+		.select()
+		.from(scavengerHunts)
+		.where(eq(scavengerHunts.id, id))
+		.get();
+};
+
 export const getScavengerHuntItemsById = async (id: string, userId: string) => {
 	const result = await db
 		.select()
@@ -87,7 +95,7 @@ export const getScavengerHuntItemsById = async (id: string, userId: string) => {
 		)
 		.orderBy(asc(scavengerHuntItems.value), asc(scavengerHuntItems.title));
 
-	log.debug({ result }, 'getScavengerHuntItemsById query result');
+	// log.debug({ result }, 'getScavengerHuntItemsById query result');
 	return result;
 };
 
@@ -118,7 +126,12 @@ export const updateScavengerHunt = async (
 };
 
 export const addItemToScavengerHunt = async (item: NewScavengerHuntItem) => {
-	log.debug({ item }, 'inserting new ScavengerHuntItem');
-	const result = await db.insert(scavengerHuntItems).values(item);
-	log.debug({ result }, 'successffuly inserted to item');
+	return db.insert(scavengerHuntItems).values(item).returning();
+};
+
+export const deleteItemFromScavengerHunt = async (id: string) => {
+	return db
+		.delete(scavengerHuntItems)
+		.where(eq(scavengerHuntItems.id, id))
+		.returning();
 };
