@@ -45,6 +45,7 @@
 - [x] - style login links and buttons 
 - [x] - FB graph api not returning profile picture, has the API changed or do we need a particular version?
   - I have no idea why their graph API sucks. But I added code to hide broken images
+- [ ] - mobile header looks crappy
 
 ## Scavenger Hunt Form
 - [x] - handle client-side validation
@@ -65,7 +66,7 @@
 - [ ] - items list component which has deleteItem prop and handles ordering
   - [x] - I think that we may just want a single fetch of all details since cached functions only seem to be able to work at a route level.
 - [x] - optimistic update of items
-- [ ] - how to handle multiple optimistic updates in flight (like multiple delete) - seems like `useSubmissions` isn't working.
+- [x] - how to handle multiple optimistic updates in flight (like multiple delete) - seems like `useSubmissions` isn't working.
 - [ ] - errors to NewHuntItem from useSubmission result
 
 ## Set Up Domain to use over network

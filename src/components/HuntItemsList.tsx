@@ -6,6 +6,8 @@ import {
 } from '~/api/scavengerHunts';
 import type { ScavengerHuntItemFormFields } from '~/validators';
 import HuntItemForm from './HuntItemForm';
+import Confirmation from './Confirmation';
+import logger from '~/logger';
 
 type HuntItem = {
 	id: string;
@@ -20,6 +22,7 @@ type HuntItemsListProps = {
 
 export default function HuntItemsList(props: HuntItemsListProps) {
 	const [isAddingNewItem, setIsAddingNewItem] = createSignal(false);
+	const [itemToDelete, setItemToDelete] = createSignal<string | null>(null);
 
 	const createNewItem = useAction(createScavengerHuntItem);
 	const newItemSubmission = useSubmission(createScavengerHuntItem);
@@ -34,15 +37,18 @@ export default function HuntItemsList(props: HuntItemsListProps) {
 
 	const handleDeleteItem = (itemId: string) => {
 		deleteItem(props.huntId, itemId);
+		setItemToDelete(null);
+	};
+
+	const handleConfirmDelete = (itemId: string) => {
+		setItemToDelete(itemId);
 	};
 
 	const itemsByValueWithSubmission = () => {
-		const itemsBeingDeleted: string[] = [];
-
-		// Array methods aren't working on proxy Array of deleteItemSubmissions
-		for (let i = 0; i < deleteItemSubmissions.length; i++) {
-			itemsBeingDeleted.push(deleteItemSubmissions[i].input[1]);
-		}
+		// spread deleteItemSubmissions to access the inner array of the Proxy
+		const itemsBeingDeleted = [...deleteItemSubmissions].map(
+			(submission) => submission.input[1],
+		);
 
 		const allItems = [...props.items].filter(
 			(item) => !itemsBeingDeleted.includes(item.id),
@@ -99,17 +105,40 @@ export default function HuntItemsList(props: HuntItemsListProps) {
 								<span class="mr-6">{item.title} </span>
 								<span>{item.value}</span>
 							</div>
+							<div class="flex items-center gap-2">
+								<button
+									type="button"
+									onClick={() => logger.debug('Editing')}
+									disabled={!item.id}
+									class="hover:opacity-80 bg-stone-600 text-3xl disabled:invisible h-6 w-6 rounded-full"
+								>
+									<div class="i-tabler:pencil bg-white text-xl mx-auto" />
+								</button>
 
-							<button
-								type="button"
-								onClick={() => handleDeleteItem(item.id)}
-								disabled={!item.id}
-								class="i-tabler:circle-x-filled bg-rose-500 hover:opacity-80 text-3xl disabled:invisible"
-							/>
+								<button
+									type="button"
+									onClick={() => handleConfirmDelete(item.id)}
+									disabled={!item.id}
+									class="hover:opacity-80 bg-rose-500 text-3xl disabled:invisible h-6 w-6 rounded-full"
+								>
+									<div class="i-tabler:x bg-white text-xl mx-auto" />
+								</button>
+							</div>
 						</div>
 					);
 				}}
 			</For>
+			<Show when={!!itemToDelete()}>
+				<Confirmation
+					onConfirm={() => {
+						handleDeleteItem(itemToDelete() ?? '');
+					}}
+					onCancel={() => setItemToDelete(null)}
+					confirmationMessage="It will be gone for good"
+					cancelButtonText="Cancel"
+					confirmButtonText="Proceed"
+				/>
+			</Show>
 		</>
 	);
 }

@@ -2,7 +2,7 @@ import { createMiddleware } from '@solidjs/start/middleware';
 import authMiddleware from './auth/middleware';
 import { eventLoggerMiddleware } from './logger';
 
-const delay = 750;
+const delay = 250;
 const onRequest = [authMiddleware];
 const onBeforeResponse = [eventLoggerMiddleware];
 
