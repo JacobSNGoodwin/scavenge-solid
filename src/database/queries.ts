@@ -135,3 +135,18 @@ export const deleteItemFromScavengerHunt = async (id: string) => {
 		.where(eq(scavengerHuntItems.id, id))
 		.returning();
 };
+
+type UpdateScavengerHuntItem = Pick<
+	NewScavengerHuntItem,
+	'title' | 'value' | 'updatedAt'
+>;
+export const updateItemInScavengerHunt = async (
+	id: string,
+	item: UpdateScavengerHuntItem,
+) => {
+	return db
+		.update(scavengerHuntItems)
+		.set(item)
+		.where(eq(scavengerHuntItems.id, id))
+		.returning();
+};

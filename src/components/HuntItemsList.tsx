@@ -3,6 +3,7 @@ import { For, Show, createSignal } from 'solid-js';
 import {
 	createScavengerHuntItem,
 	deleteScavengerHuntItem,
+	updateScavengerHuntItem,
 } from '~/api/scavengerHunts';
 import type { ScavengerHuntItemFormFields } from '~/validators';
 import HuntItemForm from './HuntItemForm';
@@ -23,6 +24,7 @@ type HuntItemsListProps = {
 export default function HuntItemsList(props: HuntItemsListProps) {
 	const [isAddingNewItem, setIsAddingNewItem] = createSignal(false);
 	const [itemToDelete, setItemToDelete] = createSignal<string | null>(null);
+	const [itemToUpdate, setItemToUpdate] = createSignal<string | null>(null);
 
 	const createNewItem = useAction(createScavengerHuntItem);
 	const newItemSubmission = useSubmission(createScavengerHuntItem);
@@ -30,9 +32,20 @@ export default function HuntItemsList(props: HuntItemsListProps) {
 	const deleteItem = useAction(deleteScavengerHuntItem);
 	const deleteItemSubmissions = useSubmissions(deleteScavengerHuntItem);
 
+	const updateItem = useAction(updateScavengerHuntItem);
+	const updateItemSubmissions = useSubmissions(updateScavengerHuntItem);
+
 	const handleAddNewItem = (item: ScavengerHuntItemFormFields) => {
 		setIsAddingNewItem(false);
 		createNewItem(props.huntId, item);
+	};
+
+	const handleUpdateItem = (
+		itemId: string,
+		item: ScavengerHuntItemFormFields,
+	) => {
+		setItemToUpdate(null);
+		updateItem(props.huntId, itemId, item);
 	};
 
 	const handleDeleteItem = (itemId: string) => {
@@ -50,9 +63,26 @@ export default function HuntItemsList(props: HuntItemsListProps) {
 			(submission) => submission.input[1],
 		);
 
-		const allItems = [...props.items].filter(
-			(item) => !itemsBeingDeleted.includes(item.id),
+		const itemsBeingUpdated = [...updateItemSubmissions].reduce(
+			(idToFields, currentSubmission) => {
+				idToFields[currentSubmission.input[1]] = currentSubmission.input[2];
+
+				return idToFields;
+			},
+			{} as Record<string, ScavengerHuntItemFormFields>,
 		);
+
+		logger.debug(itemsBeingUpdated, 'items being updated');
+
+		const allItems = [...props.items]
+			.filter((item) => !itemsBeingDeleted.includes(item.id))
+			.map((item) => {
+				if (itemsBeingUpdated[item.id]) {
+					return { ...item, ...itemsBeingUpdated[item.id] };
+				}
+
+				return item;
+			});
 
 		if (newItemSubmission.input) {
 			const fields = newItemSubmission.input[1];
@@ -100,31 +130,42 @@ export default function HuntItemsList(props: HuntItemsListProps) {
 			<For each={itemsByValueWithSubmission()}>
 				{(item) => {
 					return (
-						<div class="my-1 px-2 text-lg flex items-center gap-4">
-							<div class="flex justify-between grow">
-								<span class="mr-6">{item.title} </span>
-								<span>{item.value}</span>
-							</div>
-							<div class="flex items-center gap-2">
-								<button
-									type="button"
-									onClick={() => logger.debug('Editing')}
-									disabled={!item.id}
-									class="hover:opacity-80 bg-stone-600 text-3xl disabled:invisible h-6 w-6 rounded-full"
-								>
-									<div class="i-tabler:pencil bg-white text-xl mx-auto" />
-								</button>
+						<>
+							<Show when={item.id === itemToUpdate()}>
+								<HuntItemForm
+									initialForm={item}
+									onSubmit={(fields) => handleUpdateItem(item.id, fields)}
+									onCancel={() => setItemToUpdate(null)}
+								/>
+							</Show>
+							<Show when={item.id !== itemToUpdate()}>
+								<div class="my-1 px-2 text-lg flex items-center gap-4">
+									<div class="flex justify-between grow">
+										<span class="mr-6">{item.title} </span>
+										<span>{item.value}</span>
+									</div>
+									<div class="flex items-center gap-2">
+										<button
+											type="button"
+											onClick={() => setItemToUpdate(item.id)}
+											disabled={!item.id}
+											class="hover:opacity-80 bg-stone-600 text-3xl disabled:invisible h-6 w-6 rounded-full"
+										>
+											<div class="i-tabler:pencil bg-white text-xl mx-auto" />
+										</button>
 
-								<button
-									type="button"
-									onClick={() => handleConfirmDelete(item.id)}
-									disabled={!item.id}
-									class="hover:opacity-80 bg-rose-500 text-3xl disabled:invisible h-6 w-6 rounded-full"
-								>
-									<div class="i-tabler:x bg-white text-xl mx-auto" />
-								</button>
-							</div>
-						</div>
+										<button
+											type="button"
+											onClick={() => handleConfirmDelete(item.id)}
+											disabled={!item.id}
+											class="hover:opacity-80 bg-rose-500 text-3xl disabled:invisible h-6 w-6 rounded-full"
+										>
+											<div class="i-tabler:x bg-white text-xl mx-auto" />
+										</button>
+									</div>
+								</div>
+							</Show>
+						</>
 					);
 				}}
 			</For>

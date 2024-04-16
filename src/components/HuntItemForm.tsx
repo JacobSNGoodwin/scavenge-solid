@@ -15,7 +15,7 @@ type NewHuntItemProps = {
 };
 
 export default function NewHuntItem(props: NewHuntItemProps) {
-	const [value, setValue] = createSignal(1);
+	const [value, setValue] = createSignal(props?.initialForm?.value ?? 1);
 	const [formErrors, setFormErrors] = createStore<ScavengerHuntItemFormErrors>(
 		{},
 	);
@@ -48,12 +48,12 @@ export default function NewHuntItem(props: NewHuntItemProps) {
 	};
 
 	return (
-		<div class="px-4 my-4">
+		<div class="px-4 my-12">
 			<div class="mx-auto my-2 flex items-center h-8 text-xl">
 				<input
 					ref={titleRef}
 					name="title"
-					value=""
+					value={props?.initialForm?.title ?? ''}
 					placeholder="Title"
 					type="text"
 					class="text-input focus:border-violet-500 grow"
@@ -91,14 +91,28 @@ export default function NewHuntItem(props: NewHuntItemProps) {
 					<span class="align-middle mr-2">Cancel</span>
 					<span class="i-tabler:square-rounded-x-filled inline-block align-middle" />
 				</button>
-				<button
-					type="button"
-					class="btn w-32 bg-violet-500 text-white text-md block"
-					onClick={validateAndSubmit}
+				<Show
+					when={props.initialForm}
+					fallback={
+						<button
+							type="button"
+							class="btn w-32 bg-violet-500 text-white text-md block"
+							onClick={validateAndSubmit}
+						>
+							<span class="align-middle mr-2">Add</span>
+							<span class="i-tabler:square-rounded-chevron-right-filled inline-block align-middle" />
+						</button>
+					}
 				>
-					<span class="align-middle mr-2">Add</span>
-					<span class="i-tabler:square-rounded-chevron-right-filled inline-block align-middle" />
-				</button>
+					<button
+						type="button"
+						class="btn w-32 bg-violet-500 text-white text-md block"
+						onClick={validateAndSubmit}
+					>
+						<span class="align-middle mr-2">Update</span>
+						<span class="i-tabler:square-rounded-chevron-right-filled inline-block align-middle" />
+					</button>
+				</Show>
 			</div>
 		</div>
 	);

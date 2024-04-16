@@ -3,8 +3,8 @@ import { createStore } from 'solid-js/store';
 import logger from '~/logger';
 import {
 	scavengerHuntSchema,
-	ScavengerHuntFormFields,
-	ScavengerHuntFormErrors,
+	type ScavengerHuntFormFields,
+	type ScavengerHuntFormErrors,
 } from '~/validators';
 
 type ScavengerHuntFormProps = {

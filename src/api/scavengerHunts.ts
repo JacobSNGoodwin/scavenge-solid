@@ -15,6 +15,7 @@ import {
 	getScavengerHuntById,
 	getScavengerHuntItemsById,
 	getScavengerHuntsByUserId,
+	updateItemInScavengerHunt,
 	updateScavengerHunt,
 } from '../database/queries';
 import { isNotNullish } from '~/utils';
@@ -189,8 +190,7 @@ export const createScavengerHuntItem = action(
 
 		const added = await addItemToScavengerHunt(newItem);
 
-		log.info({ added }, 'Succesfully addded new scavenger hunt item');
-
+		log.debug({ added }, 'added new item to scavenger hunt');
 		revalidate(getScavengerHuntDetails.keyFor(huntId));
 	},
 );
@@ -223,6 +223,47 @@ export const deleteScavengerHuntItem = action(
 		const deleted = await deleteItemFromScavengerHunt(itemId);
 
 		log.debug({ deleted }, 'deleted item from scavenger hunt');
+		revalidate(getScavengerHuntDetails.keyFor(huntId));
+	},
+);
+
+export const updateScavengerHuntItem = action(
+	async (
+		huntId: string,
+		itemId: string,
+		fields: ScavengerHuntItemFormFields,
+	) => {
+		'use server';
+		const request = getRequestEvent();
+		const userId = request?.locals.user?.id;
+
+		if (!userId) {
+			throw redirect('/login');
+		}
+
+		const scavengerHunt = await getScavengerHuntById(huntId);
+
+		if (scavengerHunt?.createdBy !== userId) {
+			// TODO - handle this
+			throw new Error('Not authorized');
+		}
+
+		log.info(
+			{
+				huntId,
+				itemId,
+				fields,
+			},
+			'updating existing scavenger hunt item',
+		);
+
+		const updatedAt = new Date();
+		const updated = await updateItemInScavengerHunt(itemId, {
+			...fields,
+			updatedAt,
+		});
+
+		log.debug({ updated }, 'updated item from scavenger hunt');
 		revalidate(getScavengerHuntDetails.keyFor(huntId));
 	},
 );
