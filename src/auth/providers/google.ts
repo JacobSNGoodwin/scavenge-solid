@@ -2,6 +2,8 @@ import { Google } from 'arctic';
 import { generateRandom } from './generateRandom';
 import logger from '~/logger';
 
+const log = logger.child({ namespace: 'auth-provider-google' });
+
 const google = new Google(
 	process.env.GOOGLE_CLIENT_ID ?? '',
 	process.env.GOOGLE_CLIENT_SECRET ?? '',
@@ -12,8 +14,8 @@ export const googleAuthorize = async () => {
 	const state = generateRandom();
 	const codeVerifier = generateRandom();
 
-	logger.info('creating google authorization URL');
-	logger.debug('the state and code verifier', { state, codeVerifier });
+	log.info('creating google authorization URL');
+	log.debug({ state, codeVerifier }, 'the state and code verifier');
 
 	const url = await google.createAuthorizationURL(state, codeVerifier, {
 		// scopes: ['https://www.googleapis.com/auth/userinfo.email'],
@@ -42,14 +44,17 @@ export const googleVerify = async ({
 	stateParam: string;
 	codeVerifierCookie: string;
 }) => {
-	logger.debug('googleVerify params', {
-		code,
-		stateCookie,
-		stateParam,
-		codeVerifierCookie,
-	});
+	log.debug(
+		{
+			code,
+			stateCookie,
+			stateParam,
+			codeVerifierCookie,
+		},
+		'googleVerify params',
+	);
 
-	logger.info('attempting to verify google user');
+	log.info('attempting to verify google user');
 	if (!code || !stateCookie || !stateParam) {
 		throw new Error('Missing auth parameter');
 	}
@@ -58,14 +63,14 @@ export const googleVerify = async ({
 		throw new Error('Could not authorize user');
 	}
 
-	logger.debug('retrieving token', { code });
+	log.debug({ code }, 'retrieving token');
 
 	const tokens = await google.validateAuthorizationCode(
 		code,
 		codeVerifierCookie,
 	);
 
-	logger.debug('Retrieved tokens', tokens);
+	log.debug({ tokens }, 'Retrieved tokens');
 	const url = new URL('https://openidconnect.googleapis.com/v1/userinfo');
 
 	// TODO - check for errors
@@ -76,7 +81,7 @@ export const googleVerify = async ({
 	});
 	const user = (await response.json()) as GoogleUser;
 
-	logger.info('Fetched the following response from Google', { user });
+	log.info({ user }, 'Fetched the following user from Google');
 
 	return {
 		name: user.name,

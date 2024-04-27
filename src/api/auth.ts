@@ -23,21 +23,15 @@ export const getAuthUrl = cache(async (provider: string) => {
 		throw new Error('No event found');
 	}
 
-	console.debug('Redirecting to auth for following provider', { provider });
+	log.debug({ provider }, 'Redirecting to auth for following provider');
 
 	// figure out error handling
 	if (!authorizers[provider]) {
-		console.warn('Providers does not exist', { provider });
+		log.warn({ provider }, 'Providers does not exist');
 		throw redirect('/');
 	}
 
 	const { url, state, codeVerifier } = await authorizers[provider]();
-
-	// console.debug('Created the following authorizer data', {
-	// 	url,
-	// 	state,
-	// 	codeVerifier,
-	// });
 
 	const event = requestEvent.nativeEvent;
 	// store state verifier as cookie
@@ -58,9 +52,7 @@ export const getAuthUrl = cache(async (provider: string) => {
 		});
 	}
 
-	log.debug('redirecting to', {
-		href: url.href,
-	});
+	log.debug({ href: url.href }, 'redirecting to');
 
 	// mutating event response or calling vinxi/http methods does not work for some reason
 	// but the cookies are still set.
@@ -100,41 +92,54 @@ export const verifyAuth = cache(async (provider: string) => {
 	deleteCookie(event, 'state');
 	deleteCookie(event, 'code_verifier');
 
-	console.debug('Authorizing with params', verifierParams);
+	log.debug({ verifierParams }, 'Authorizing with params');
 
 	const providerUser = await verifier(verifierParams);
-	console.debug('the providerUser', providerUser);
+	log.info(
+		{ providerUser },
+		'received user from auth provider. Checking for user in DB',
+	);
 
 	const existingUserWithEmail = await findUserByEmail(providerUser.email);
 
 	if (existingUserWithEmail) {
-		console.info('found existing user with email. Updating user', {
-			existingUserWithEmail,
-		});
+		log.info(
+			{ existingUserWithEmail },
+			'found existing user with email. Updating user',
+		);
 
 		const updatedUser = await updateExistingUser(
 			existingUserWithEmail,
 			providerUser,
 		);
 
-		console.debug('the updated user, creating session', { updatedUser });
+		log.debug({ updatedUser }, 'the updated user, creating session');
 
 		const session = await lucia.createSession(updatedUser.id, {});
 		const cookie = lucia.createSessionCookie(session.id).serialize();
 
-		console.debug('the session and cookie', { session, cookie });
+		log.debug({ session, cookie }, 'the session and cookie', {
+			session,
+			cookie,
+		});
 
+		log.info('appending cookie to headers and redirecting to /manage');
 		appendHeader(event, 'Set-Cookie', cookie);
 
 		throw redirect('/manage');
 	}
 
+	log.info(
+		{ providerUser },
+		'provider auth user does not exist. Creating new user',
+	);
 	const newUser = await createUser({ id: nanoid(), ...providerUser });
 	const session = await lucia.createSession(newUser.id, {});
 	const cookie = lucia.createSessionCookie(session.id).serialize();
 
-	console.debug('the session and cookie', { session, cookie });
+	log.debug({ session, cookie }, 'the session and cookie');
 
+	log.info('appending cookie to headers and redirecting to /manage');
 	appendHeader(event, 'Set-Cookie', cookie);
 
 	throw redirect('/manage');
