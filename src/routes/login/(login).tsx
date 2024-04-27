@@ -1,4 +1,4 @@
-import { RouteDefinition, cache, createAsync } from '@solidjs/router';
+import { type RouteDefinition, cache, createAsync } from '@solidjs/router';
 import { redirect } from '@solidjs/router';
 import { Show, Suspense, getRequestEvent } from 'solid-js/web';
 
@@ -41,13 +41,13 @@ export default function Login() {
 						<div class="i-logos:google-icon block" />
 						<div>Google</div>
 					</a>
-					<a
-						href="/authorize/facebook"
-						class="btn block w-36 text-center mx-auto flex justify-center items-center space-x-2"
-					>
-						<div class="i-logos:facebook block" />
-						<div>Facebook</div>
-					</a>
+					{/* <a */}
+					{/* 	href="/authorize/facebook" */}
+					{/* 	class="btn block w-36 text-center mx-auto flex justify-center items-center space-x-2" */}
+					{/* > */}
+					{/* 	<div class="i-logos:facebook block" /> */}
+					{/* 	<div>Facebook</div> */}
+					{/* </a> */}
 				</main>
 			</Show>
 		</Suspense>

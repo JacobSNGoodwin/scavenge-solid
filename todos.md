@@ -85,3 +85,8 @@
   - for now, it could be a record with key of the game/hunt mapped to list of event streams
 - useful docs
   - [creating list of clients](https://digitalocean.com/community/tutorials/nodejs-server-sent-events-build-realtime-app#step-1-building-the-sse-express-backend)
+
+## Create Game
+
+- [ ] - Do we want to maybe just refetch/revalidate game state on each player/client over network? Or do we want to connect to an SSE endpoint that will push updates at an interval?
+  - actually leaning towards the simpler solution of requesting data from the client at an interval to support more deployment options (lambdas)

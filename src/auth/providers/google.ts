@@ -12,7 +12,8 @@ export const googleAuthorize = async () => {
 	const state = generateRandom();
 	const codeVerifier = generateRandom();
 
-	console.debug('the state and code verifier', { state, codeVerifier });
+	logger.info('creating google authorization URL');
+	logger.debug('the state and code verifier', { state, codeVerifier });
 
 	const url = await google.createAuthorizationURL(state, codeVerifier, {
 		// scopes: ['https://www.googleapis.com/auth/userinfo.email'],
@@ -41,13 +42,14 @@ export const googleVerify = async ({
 	stateParam: string;
 	codeVerifierCookie: string;
 }) => {
-	console.info('googleVerify params', {
+	logger.debug('googleVerify params', {
 		code,
 		stateCookie,
 		stateParam,
 		codeVerifierCookie,
 	});
 
+	logger.info('attempting to verify google user');
 	if (!code || !stateCookie || !stateParam) {
 		throw new Error('Missing auth parameter');
 	}
@@ -56,14 +58,14 @@ export const googleVerify = async ({
 		throw new Error('Could not authorize user');
 	}
 
-	console.debug('retrieving token', { code });
+	logger.debug('retrieving token', { code });
 
 	const tokens = await google.validateAuthorizationCode(
 		code,
 		codeVerifierCookie,
 	);
 
-	console.debug('Retrieved tokens', tokens);
+	logger.debug('Retrieved tokens', tokens);
 	const url = new URL('https://openidconnect.googleapis.com/v1/userinfo');
 
 	// TODO - check for errors
@@ -74,7 +76,7 @@ export const googleVerify = async ({
 	});
 	const user = (await response.json()) as GoogleUser;
 
-	console.debug('Fetched the following response from Google', { user });
+	logger.info('Fetched the following response from Google', { user });
 
 	return {
 		name: user.name,

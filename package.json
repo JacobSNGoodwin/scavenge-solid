@@ -1,47 +1,48 @@
 {
-	"name": "scavenge-solid",
-	"type": "module",
-	"scripts": {
-		"dev": "vinxi dev",
-		"build": "vinxi build",
-		"start": "vinxi start",
-		"db:start": "turso dev --db-file ./.data/local.db",
-		"db:generate": "bunx drizzle-kit generate:sqlite",
-		"db:push": "bunx drizzle-kit push:sqlite",
-		"db:studio": "bunx drizzle-kit studio"
-	},
-	"dependencies": {
-		"@iconify-json/logos": "^1.1.42",
-		"@iconify-json/svg-spinners": "^1.1.2",
-		"@iconify-json/tabler": "^1.1.109",
-		"@libsql/client": "^0.5.6",
-		"@lucia-auth/adapter-drizzle": "^1.0.0",
-		"@solidjs/meta": "^0.29.2",
-		"@solidjs/router": "0.13.2",
-		"@solidjs/start": "1.0.0-rc.0",
-		"@unocss/reset": "^0.58.3",
-		"arctic": "^1.1.4",
-		"drizzle-orm": "^0.29.3",
-		"h3": "^1.11.1",
-		"lucia": "^3.0.1",
-		"nanoid": "^5.0.5",
-		"oslo": "^1.0.4",
-		"pino": "^8.19.0",
-		"pino-http": "^9.0.0",
-		"pino-pretty": "^10.3.1",
-		"solid-js": "^1.8.15",
-		"unstorage": "^1.10.1",
-		"vinxi": "^0.3.10",
-		"zod": "^3.22.4"
-	},
-	"engines": {
-		"node": ">=18"
-	},
-	"devDependencies": {
-		"@types/bun": "^1.0.8",
-		"@types/pg": "^8.11.0",
-		"@types/web": "^0.0.140",
-		"drizzle-kit": "^0.20.14",
-		"unocss": "^0.58.3"
-	}
+  "name": "scavenge-solid",
+  "type": "module",
+  "scripts": {
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start",
+    "db:start": "turso dev --db-file ./.data/local.db",
+    "db:generate": "bunx drizzle-kit generate:sqlite",
+    "db:push": "bunx drizzle-kit push:sqlite",
+    "db:studio": "bunx drizzle-kit studio"
+  },
+  "dependencies": {
+    "@iconify-json/logos": "^1.1.42",
+    "@iconify-json/svg-spinners": "^1.1.2",
+    "@iconify-json/tabler": "^1.1.109",
+    "@libsql/client": "^0.5.6",
+    "@lucia-auth/adapter-drizzle": "^1.0.0",
+    "@solidjs/meta": "^0.29.2",
+    "@solidjs/router": "0.13.2",
+    "@solidjs/start": "1.0.0-rc.0",
+    "@unocss/reset": "^0.58.3",
+    "arctic": "^1.1.4",
+    "drizzle-orm": "^0.29.3",
+    "h3": "^1.11.1",
+    "lucia": "^3.0.1",
+    "nanoid": "^5.0.5",
+    "oslo": "^1.0.4",
+    "pino": "^8.19.0",
+    "pino-http": "^9.0.0",
+    "pino-pretty": "^10.3.1",
+    "solid-js": "^1.8.15",
+    "unstorage": "^1.10.1",
+    "vinxi": "^0.3.10",
+    "zod": "^3.22.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "latest",
+    "@types/bun": "^1.0.8",
+    "@types/pg": "^8.11.0",
+    "@types/web": "^0.0.140",
+    "drizzle-kit": "^0.20.14",
+    "unocss": "^0.58.3"
+  }
 }

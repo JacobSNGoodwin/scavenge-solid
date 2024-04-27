@@ -3,6 +3,9 @@ import UnoCSS from 'unocss/vite';
 import { presetIcons, presetWebFonts, presetUno } from 'unocss';
 
 export default defineConfig({
+	server: {
+		preset: 'bun',
+	},
 	vite: {
 		plugins: [
 			UnoCSS({
